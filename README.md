@@ -2,4 +2,4 @@
 kod: loadstring(exports["MahLib"].getFunctions())()
 
 Sadece bir kaç fonksiyon kullanmak isterseniz;
-loadstring(exports["MahLib"].getFunctions("guiCreateWindow","guiCreateButton"))()
+#loadstring(exports["MahLib"].getFunctions("guiCreateWindow","guiCreateButton"))()
