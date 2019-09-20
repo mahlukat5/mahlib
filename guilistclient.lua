@@ -1,4 +1,4 @@
-﻿-- full gui
+-- full gui
 _guiCreateGridList = guiCreateGridList
 _guiGridListAddColumn = guiGridListAddColumn
 _guiGridListAddRow = guiGridListAddRow
@@ -87,12 +87,14 @@ function MLguiGridListAddColumn(liste,baslik,uzunluk)
 	return sira
 end
 function MLguiGridListAddRow(liste,...)
+	assert(liste, "expected gui-element at argument 1, got ".. type(liste))
 	local liste = getListe(liste)
+	if not liste then return false end
 	local sira = #liste.rows+1
 	if not liste.rows[sira] then liste.rows[sira] = {} end
 	return sira
 end
-function MLguiGridListSetItemText(liste,row,col,yazi,secili,sort,backcolor,backalpha)
+function MLguiGridListSetItemText(liste,row,col,yazi,secili,sort,img,imgG,imgU)
 	local liste = getListe(liste)
 	if row < 1 then row = 1 end
 	if liste.texts[row] and liste.texts[row][col] then
@@ -100,8 +102,8 @@ function MLguiGridListSetItemText(liste,row,col,yazi,secili,sort,backcolor,backa
 			if isElement(v) then destroyElement(v) end
 		end
 	end
-	if not liste.rows[row] then print("guiGridListSetItemText row yok") return end
-	if not liste.cols[col] then print("guiGridListSetItemText col yok") return end
+	if not liste.rows[row] then print("guiGridListSetItemText row yok") return false end
+	if not liste.cols[col] then print("guiGridListSetItemText col yok") return false end
 	if not liste.texts[row] then liste.texts[row] = {} end
 	if not liste.texts[row][col] then liste.texts[row][col] = {} end
 	if not liste.texts[row][0] then liste.texts[row][0] = {} end
@@ -127,15 +129,22 @@ function MLguiGridListSetItemText(liste,row,col,yazi,secili,sort,backcolor,backa
 		liste.texts[row][0].arkarenk = backcolor
 	end	
 	liste.texts[row][col].secili = secili
-	liste.texts[row][col].yazi = guiCreateLabel(ox+2,0,og-2,20,yazi,false,liste.texts[row][0].arka )
+	if not img then
+		liste.texts[row][col].yazi = guiCreateLabel(ox+2,0,og-2,20,yazi,false,liste.texts[row][0].arka )
+	else
+		liste.texts[row][col].yazi = guiCreateStaticImage(ox+2,0,imgG or 20,imgU or 20,yazi,false,liste.texts[row][0].arka )
+	end	
 	liste.texts[row][col].yaziarka = guiCreateLabel(0,0,liste.g,20,"",false,liste.texts[row][0].arka )
 	guiBringToFront(liste.texts[row][col].yaziarka)
 	return true
 end
+function MLguiGridListSetItemImage(liste,row,col,yazi,secili,sort,imgG,imgU)
+	return MLguiGridListSetItemText(liste,row,col,yazi,secili,sort,true,imgG,imgU)
+end
 function MLguiGridListSetSelectedItem(liste,row,col)
 	local liste = getListe(liste)
 	if row == 0 then row = 1 end
-	local rows,cols = guiGridListGetSelectedItem(liste)
+	local rows,cols = MLguiGridListGetSelectedItem(liste)
 	if row ~= -1 and col ~= -1 then
 		if rows ~= row then
 			if rows ~= -1 and cols ~= -1 then
@@ -254,7 +263,8 @@ function MLguiGridListGetItemText(liste,row,col)
 	if row < 1 then row = 1 end
 	if not liste.texts[row] then return false end
 	if not liste.texts[row][col] then return false end
-	return guiGetText(liste.texts[row][col].yazi)
+	local elm = liste.texts[row][col].yazi
+	return getElementType(elm)
 end
 function MLguiGridListGetItemData(liste,row,col)
 	local liste = getListe(liste)
@@ -384,11 +394,11 @@ addEventHandler("onClientGUIClick", resourceRoot, function()
 		for row,a in pairs(v.texts) do
 			for col,k in pairs(a) do
 				if source == k.yaziarka and not k.secili then
-					guiGridListSetSelectedItem(v,row,col)
+					MLguiGridListSetSelectedItem(v,row,col)
 					triggerEvent("onClientGUIClick",v.back)
 					break
 				elseif source == v.enarka then
-					guiGridListSetSelectedItem(v,-1,-1)
+					MLguiGridListSetSelectedItem(v,-1,-1)
 					break
 				end
 			end	
