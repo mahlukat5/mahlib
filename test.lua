@@ -20,6 +20,7 @@ local functions = {
 			" function guiGridListAddColumn(...)return exports."..isim..":MLguiGridListAddColumn(...)end",
 			" function guiGridListAddRow(...)return exports."..isim..":MLguiGridListAddRow(...)end",
 			" function guiGridListSetItemText(...)return exports."..isim..":MLguiGridListSetItemText(...)end",
+			" function guiGridListSetItemImage(...)return exports."..isim..":MLguiGridListSetItemImage(...)end",
 			" function guiGridListSetSelectedItem(...)return exports."..isim..":MLguiGridListSetSelectedItem(...)end",
 			" function guiGridListSetItemData(...)return exports."..isim..":MLguiGridListSetItemData(...)end",
 			" function guiGridListRemoveRow(...)return exports."..isim..":MLguiGridListRemoveRow(...)end",
@@ -56,13 +57,13 @@ local functions = {
 		" function renkVer(...)return exports."..isim..":renkVer(...)end",
 	}
 }
+
 function getFunctions(...)
 	local f = ""
 	local isim = {...} -- gelen verileri table geçirdik
 	if #isim > 0 then -- eğer gelen veri varsa
 		if #isim == 1 then -- eğer 1 tane ise
 			local isim = isim[1] -- 1.sini çektik
-			
 			if isim ~= "utils" and functions["create"][isim] then -- eğer "utils" den başka ise ve tabloda varsa
 			
 				for i,v in pairs(functions["create"][isim]) do
@@ -75,7 +76,7 @@ function getFunctions(...)
 				
 				return f	 -- gönderdik
 			end	
-			
+			return f
 		else -- eğer 1 taneden fazla ise örn: "guiCreateWindow","guiCreateButton",... gibi
 			
 			for i,v in pairs(isim) do -- gelen verileri döndürdük
