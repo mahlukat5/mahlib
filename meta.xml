@@ -1,10 +1,4 @@
-﻿<meta>
-	<!--
-	<script src='lib.lua' type='client' cache="false"/> 
-	<script src='dxlistclient.lua' type='client' cache="false"/>
-	<script src='guilistclient.lua' type='client' cache="false"/>
-	<script src='client.lua' type='client' cache="false"/>
-	-->
+<meta>
 	<script src='guilistclient.lua' type='client' cache="false"/>	
 	<script src='lib.lua' type='client' cache="false"/> 
 	<script src='guiCreate/guiCreateWindow.lua' type='client' cache="false"/> 
@@ -31,6 +25,7 @@
 	<export function="MLguiGridListAddColumn" type="client" />
 	<export function="MLguiGridListAddRow" type="client" />
 	<export function="MLguiGridListSetItemText" type="client" />
+	<export function="MLguiGridListSetItemImage" type="client" />
 	<export function="MLguiGridListSetSelectedItem" type="client" />
 	<export function="MLguiGridListSetItemData" type="client" />
 	<export function="MLguiGridListRemoveRow" type="client" />
