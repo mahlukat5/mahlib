@@ -17,6 +17,7 @@ function guiCreateButton(x,y,g,u,yazi,relative,parent,renk1,renk2,kenaralpha)
 		if not parent then px,pu = guiGetScreenSize() end
 		x,y,g,u = x*px,y*pu,g*px,u*pu
 	end
+	relative = false
 	b.resim = guiCreateStaticImage(x,y,g,u,resimOlustur("test"),false,parent)
 	--kenarlar
 	b.kenarlar = {
