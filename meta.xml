@@ -56,7 +56,6 @@
 	<export function="guiSetEnabled" type="client" />
 	<export function="guiSetVisible" type="client" />
 	<export function="destroyElement" type="client" />
-	<export function="guiEditSetColor" type="client" />
 	<export function="guiWindowSetSizable" type="client" />
 	<export function="guiWindowSetMovable" type="client" />
 	<export function="guiWindowIsMovable" type="client" />
