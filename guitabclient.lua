@@ -8,9 +8,9 @@ _guiDeleteTab = guiDeleteTab
 
 
 function guiCreateTabPanel(x,y,g,u,relative,parent)
-	local sira = #tabs+1
-	if not tabs[sira] then tabs[sira] = {} end
-	local t = tabs[sira]
+	local sira = #gui["t"]+1
+	if not gui["t"][sira] then gui["t"][sira] = {} end
+	local t = gui["t"][sira]
 	if relative  then
 		px,pu=getParentSize(parent)
 		x,y,g,u=x*px,y*pu,g*px,u*pu
@@ -29,12 +29,13 @@ function guiCreateTabPanel(x,y,g,u,relative,parent)
 	}
 	if not scriptler[sourceResource] then scriptler[sourceResource] = {} end
 	if not scriptler[sourceResource]["t"] then scriptler[sourceResource]["t"] = {} end
-	table.insert(scriptler[sourceResource]["t"], {tabs,sira,t.resim})
-
+	table.insert(scriptler[sourceResource]["t"], {sira,t.resim})
+	genelGuiTablo[t.resim]={i=sira,t="t"}
 	return t.resim
 end
 function guiCreateTab(yazi,parent,alanrenk)
-	local t = getTabPanel(parent)
+	local ind = genelGuiTablo[parent]
+	local t = gui["t"][ind.i]
 	local sira = #t.tabciklar+1
 	if not t.tabciklar[sira] then t.tabciklar[sira] = {} end
 	local tab = t.tabciklar[sira]
@@ -52,18 +53,13 @@ function guiCreateTab(yazi,parent,alanrenk)
 	renkVer(tab.kose,"1883D7")
 	
 	tab.yazi = guiCreateLabel(0,0,yuzunluk,20,yazi,false,tab.arka)
-	guiLabelSetHorizontalAlign(tab.yazi, "center")
-	guiLabelSetVerticalAlign(tab.yazi, "center")
+	guiLabelSetHorizontalAlign(tab.yazi, "center") guiLabelSetVerticalAlign(tab.yazi, "center")
 	
 	tab.alan = guiCreateStaticImage(0,20,t.g,t.u,bosresim,false,parent)
 	renkVer(tab.alan,alanrenk) _guiSetVisible(tab.alan,false) guiSetAlpha(tab.arka,0.7)
-	if sira == 1 then
-		tab.secili = true
-		_guiSetVisible(tab.alan,true)
-		guiSetSelectedTab(parent,tab.alan)
-		guiSetAlpha(tab.arka,1)
-		renkVer(tab.arka,alanrenk)
-	end	
+	tabciklar[tab.yazi] = {i=sira,t="t",pi=ind.i,label=true}
+	tabciklar[tab.alan] = {i=sira,t="t",pi=ind.i}
+	if sira == 1 then guiSetSelectedTab(parent,tab.alan) end	
 	return tab.alan
 end
 function guiSetSelectedTab(tabpanel,tab)
@@ -92,9 +88,8 @@ end
 function guiDeleteTab(tab,tabpanel)
 	local t = getTabPanel(tabpanel)
 	local ttab,sira = getTab(t,tab)
-	for i,v in pairs(ttab) do
-		if isElement(v) then destroyElement(v) end
-	end	
+	if not ttab then return false end
+	if isElement(ttab.arka) then _destroyElement(ttab.arka) end
 	table.remove(t.tabciklar,sira)
 	for i=1,#t.tabciklar do
 		local ox,oy = guiGetPosition(t.tabciklar[i-1].arka,false) 
@@ -103,56 +98,26 @@ function guiDeleteTab(tab,tabpanel)
 	end
 end
 
-addEventHandler("onClientMouseEnter", resourceRoot, function()
-	for i,v in pairs(tabs) do
-		for i,t in pairs(v.tabciklar) do
-			if source == t.yazi and not t.secili then
-				guiSetAlpha(t.arka,0.6)
-				renkVer(t.arka,t.alanrenk)
-			end
-		end	
-	end
-end)
-addEventHandler("onClientMouseLeave", resourceRoot, function()
-	for i,v in pairs(tabs) do
-		for i,t in pairs(v.tabciklar) do
-			if source == t.yazi and not t.secili then
-				guiSetAlpha(t.arka,0.7)
-				renkVer(t.arka,"000000")
-			end
-		end	
-	end
-end)
+
 addEventHandler("onClientGUIClick", resourceRoot, function()
-	for i,v in pairs(tabs) do
-		for i,t in pairs(v.tabciklar) do
-			if source == t.yazi then
-				guiSetSelectedTab(v.resim,t.alan)
-				triggerEvent("onClientGUITabSwitched", t.alan, t.alan)
-			end
-		end	
+	local t = tabciklar[source]
+	if t and t.label then
+		guiSetSelectedTab(gui[t.t][t.pi].resim,gui[t.t][t.pi].tabciklar[t.i].alan)
+		triggerEvent("onClientGUITabSwitched", gui[t.t][t.pi].tabciklar[t.i].alan, gui[t.t][t.pi].tabciklar[t.i].alan)
 	end
 end)
 
 
 function getTabPanel(element)
 	if type(element) ~= "table" then
-		for i,v in pairs(tabs) do
-			if v.resim == element then
-				return tabs[i]
-			end
-		end
+		return getGuiElement(element)
 	else
 		return element
 	end	
 end
 function getTab(tabpanel,element)
-	for i,v in pairs(tabpanel.tabciklar) do
-		if v.alan == element then
-			return v,i
-		end
-	end
-	return false
+	local sira = tabciklar[element] 
+	return gui["t"][sira.pi].tabciklar[sira.i],sira.i
 end
 
 
@@ -179,7 +144,7 @@ end
 -- local memo = guiCreateMemo(20,50,100,50,"Test Memo",false,tab4)
 
 -- bindKey("3","down",function()
-	-- guiDeleteTab(tab4,tab)
+	-- guiSetText(tab4,"tab"..math.random(math.random(99999999)))
 -- end)
 
 -- showCursor(true)
