@@ -16,7 +16,6 @@ local functions = {
 		},
 		["guiCreateEdit"]={
 			" function guiCreateEdit(...)return exports."..isim..":guiCreateEdit(...)end",
-			" function guiEditSetColor(...)return exports."..isim..":guiEditSetColor(...)end",
 		},
 		["guiCreateMemo"]={" function guiCreateMemo(...)return exports."..isim..":guiCreateMemo(...)end"},
 		["guiCreateTabPanel"]={
