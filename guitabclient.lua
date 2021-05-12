@@ -1,4 +1,4 @@
-﻿-- full gui
+-- full gui
 _guiCreateTabPanel = guiCreateTabPanel
 _guiCreateTab = guiCreateTab
 _guiSetSelectedTab = guiSetSelectedTab
@@ -7,38 +7,26 @@ _guiDeleteTab = guiDeleteTab
 
 
 
-function guiCreateTabPanel(x,y,g,u,relative,parent,kenarrenk)
+function guiCreateTabPanel(x,y,g,u,relative,parent)
 	local sira = #tabs+1
 	if not tabs[sira] then tabs[sira] = {} end
 	local t = tabs[sira]
-	if not kenarrenk or string.len(kenarrenk) > 6 then
-		kenarrenk =  "1883D7"
-	end
 	if relative  then
-		px,pu = guiGetSize(parent,false)
-		x,y,g,u = x*px,y*pu,g*px,u*pu
-		relative = false
+		px,pu=getParentSize(parent)
+		x,y,g,u=x*px,y*pu,g*px,u*pu
 	end
-	
-	t.resim = guiCreateLabel(x,y,g,u,"",relative,parent)
-	t.x,t.y = guiGetPosition(t.resim,false)
-	t.g,t.u = guiGetSize(t.resim,false)
+	t.resim = guiCreateLabel(x,y,g,u,"",false,parent)
+	t.x,t.y = x,y
+	t.g,t.u = g,u
 	t.secili,t.tabciklar = nil,{}
 	
 	t.tabciklar[0] = {}
 	t.tabciklar[0].arka = guiCreateLabel(0,0,0,0,"",false,t.resim)
 	t.kenarlar = {
-		--ortaUst = guiCreateStaticImage(0,20,t.g,1,resimOlustur("test"), false, t.resim),
-		ortaAlt = guiCreateStaticImage(0,t.u-1,t.g,1,resimOlustur("test"), false, t.resim),
-		sol = guiCreateStaticImage(0,20,1,t.u-20,resimOlustur("test"), false, t.resim),
-		sag = guiCreateStaticImage(t.g-1,20,1,t.u-20,resimOlustur("test"), false, t.resim)
+		ortaAlt = createSideLine(0,t.u-1,t.g,1,t.resim,settings.tabpanel.side_lines),
+		sol = createSideLine(0,20,1,t.u-20,t.resim,settings.tabpanel.side_lines),
+		sag = createSideLine(t.g-1,20,1,t.u-20,t.resim,settings.tabpanel.side_lines)
 	}
-	
-	for i,v in pairs(t.kenarlar) do
-		renkVer(v,kenarrenk)
-		guiSetProperty(v, "AlwaysOnTop", "True")
-		guiSetAlpha(v, 0.4)
-	end	
 	if not scriptler[sourceResource] then scriptler[sourceResource] = {} end
 	if not scriptler[sourceResource]["t"] then scriptler[sourceResource]["t"] = {} end
 	table.insert(scriptler[sourceResource]["t"], {tabs,sira,t.resim})
@@ -57,9 +45,9 @@ function guiCreateTab(yazi,parent,alanrenk)
 	
 	local ox,oy = guiGetPosition(t.tabciklar[sira-1].arka,false) 
 	local og,op = guiGetSize(t.tabciklar[sira-1].arka,false)
-	local yuzunluk = string.len(yazi)*8
-	tab.arka = guiCreateStaticImage((ox+og),0,yuzunluk,20,resimOlustur("test",255),false,parent)
-	tab.kose = guiCreateStaticImage(0,19,yuzunluk,1,resimOlustur("test",255),false,tab.arka)
+	local yuzunluk = utf8.len(yazi)*8
+	tab.arka = guiCreateStaticImage((ox+og),0,yuzunluk,20,bosresim,false,parent)
+	tab.kose = guiCreateStaticImage(0,19,yuzunluk,1,bosresim,false,tab.arka)
 	renkVer(tab.arka,"000000")
 	renkVer(tab.kose,"1883D7")
 	
@@ -67,7 +55,7 @@ function guiCreateTab(yazi,parent,alanrenk)
 	guiLabelSetHorizontalAlign(tab.yazi, "center")
 	guiLabelSetVerticalAlign(tab.yazi, "center")
 	
-	tab.alan = guiCreateStaticImage(0,20.2,t.g,t.u,resimOlustur("test",255),false,parent)
+	tab.alan = guiCreateStaticImage(0,20,t.g,t.u,bosresim,false,parent)
 	renkVer(tab.alan,alanrenk) _guiSetVisible(tab.alan,false) guiSetAlpha(tab.arka,0.7)
 	if sira == 1 then
 		tab.secili = true
