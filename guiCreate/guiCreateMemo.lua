@@ -1,7 +1,7 @@
 function guiCreateMemo(x,y,g,u,yazi,relative,parent,kenarrenk)
-	msayi = #mtablo +1
-	if not mtablo[msayi] then mtablo[msayi] = {} end
-	local m = mtablo[msayi]		
+	msayi = #gui["m"] +1
+	if not gui["m"][msayi] then gui["m"][msayi] = {} end
+	local m = gui["m"][msayi]		
 	if relative  then
 		px,pu = parent and _guiGetSize(parent,false) or sx,sy 
 		x,y,g,u = x*px,y*pu,g*px,u*pu
@@ -16,7 +16,7 @@ function guiCreateMemo(x,y,g,u,yazi,relative,parent,kenarrenk)
 	}	
 	if not scriptler[sourceResource] then scriptler[sourceResource] = {} end
 	if not scriptler[sourceResource]["m"] then scriptler[sourceResource]["m"] = {} end
-	table.insert(scriptler[sourceResource]["m"], {mtablo,msayi,m.resim})
-	genelGuiTablo[m.memo]=m
+	table.insert(scriptler[sourceResource]["m"], {msayi,m.resim})
+	genelGuiTablo[m.memo]={i=msayi,t="m"}
 	return m.memo
 end
