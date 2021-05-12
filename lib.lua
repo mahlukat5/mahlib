@@ -1,21 +1,14 @@
-genelGuiTablo = {}
-scriptler = {} 
+genelGuiTablo,scriptler,tabciklar = {},{},{}
+gui = {
+	["w"]={},
+	["b"]={},
+	["g"]={},
+	["m"]={},
+	["e"]={},
+	["t"]={},
+	["guilist"]={},
+}
 sx,sy = guiGetScreenSize()
-
---guiCreateWindow
-wtablo = {}
---guiCreateButton
-btablo = {}
---guiCreateGridList
-Ltablo = {}
---guiCreateMemo
-mtablo = {}
---guiCreateEdit
-etablo = {}
--- guiCreateTab
-tabs = {}
--- full gui list
-lists = {}
 
 
 font1 = guiCreateFont("dosyalar/Font1.ttf",12)
@@ -69,14 +62,19 @@ function createSideLine(x,y,g,u,parent,hex)
 	guiSetProperty(side, "AlwaysOnTop", "True") guiSetAlpha(side, 0.4)
 	return side
 end
+function getGuiElement(elm)
+	local indeks = genelGuiTablo[elm]
+	if tabciklar[elm] then return tabciklar[elm] end
+	return (indeks and indeks.t and gui[indeks.t][indeks.i]) or indeks
+end
 
 addEventHandler("onClientResourceStop", root, function(sc)
-	if scriptler[sc] then
-		for i,v in pairs(scriptler[sc]) do
+	if scriptler[sc] and sc ~= getThisResource() then
+		for tablo,v in pairs(scriptler[sc]) do
 			for a,s in pairs(v) do 
-				local tablo,sira,element = unpack(s)
+				local sira,element = unpack(s)
 				if isElement(element) then _destroyElement(element) end
-				if tablo[sira] then tablo[sira]= nil end
+				if gui[tablo][sira] then gui[tablo][sira]= nil end
 			end	
 		end
 		scriptler[sc] = nil
@@ -85,14 +83,21 @@ end)
 
 --edit,gridlst,buton,memo mouse
 function kenarAlpha()
-	local sira = genelGuiTablo[source]
+	local sira = getGuiElement(source)
 	if sira then
 		if sira.kenarlar then
 			for i,v in pairs(sira.kenarlar) do
-				guiSetAlpha(v,  eventName == "onClientMouseEnter" and 1 or 0.4)
+				guiSetAlpha(v,eventName=="onClientMouseEnter"and 1 or 0.4)
 			end	
 		end	
-		if sira.isClose then guiSetAlpha(wtablo[sira.w].kapatArka, eventName == "onClientMouseEnter" and 1 or 0.5) end
+		if sira.isClose then guiSetAlpha(gui["w"][sira.i].kapatArka, eventName == "onClientMouseEnter" and 1 or 0.5) end
+	end
+	local t = tabciklar[source]
+	if t and t.label then
+		if not gui[t.t][t.pi].tabciklar[t.i].secili then
+			guiSetAlpha(gui[t.t][t.pi].tabciklar[t.i].arka,eventName=="onClientMouseEnter" and 0.6 or 0.7)
+			renkVer(gui[t.t][t.pi].tabciklar[t.i].arka,eventName=="onClientMouseEnter" and gui[t.t][t.pi].tabciklar[t.i].alanrenk or "000000")
+		end
 	end
 end
 addEventHandler("onClientMouseEnter", resourceRoot, kenarAlpha)
@@ -100,74 +105,18 @@ addEventHandler("onClientMouseLeave", resourceRoot, kenarAlpha)
 
 
 addEventHandler("onClientGUIClick", resourceRoot, function()
-	local sira = genelGuiTablo[source]
+	local sira = getGuiElement(source)
 	if sira and sira.isClose then 
-		guiSetVisible(wtablo[sira.w].resim, false)
+		guiSetVisible(gui["w"][sira.i].resim, false)
 		showCursor(false)
-		triggerEvent("MahLib:PencereKapatıldı",wtablo[sira.w].resim)
+		triggerEvent("MahLib:PencereKapatıldı",gui["w"][sira.i].resim)
 	end
 end)
-
-function libElementmi(element,sorgu)
-	if sorgu == "w" then -- window
-		for i,v in pairs(wtablo) do
-			if v.resim == element then
-				return v,i
-			end	
-		end
-	elseif sorgu == "b" then -- button
-		for i,v in pairs(btablo) do
-			if v.label == element then
-				return v,i
-			end	
-		end
-	elseif sorgu == "e" then -- edit	
-		for i,v in pairs(etablo) do
-			if v.edit == element then
-				return v,i
-			end	
-		end	
-	elseif sorgu == "m" then -- memo
-		for i,v in pairs(mtablo) do
-			if v.memo == element then
-				return v,i
-			end	
-		end
-	elseif sorgu == "g" then -- gridlist
-		for i,v in pairs(Ltablo) do
-			if v.liste == element then
-				return v,i
-			end	
-		end
-	elseif sorgu == "ba" then -- pencere başlık
-		for i,v in pairs(wtablo) do
-			if v.basarka == element or v.label == element then
-				return v,i
-			end	
-		end
-	elseif sorgu == "tab" then -- tab
-		for i,v in pairs(tabs) do
-			for s,a in pairs(v.tabciklar) do
-				--print(tostring(element).." = "..tostring(a.alan))
-				if a.alan == element then
-					return a,s,v
-				end
-			end
-		end 
-	elseif sorgu == "tabpanel" then
-		for i,v in pairs(tabs) do
-			if v.resim == element then
-				return v,i
-			end	
-		end
-	end	
-	return false
-end
 
 --basinca olan ufalma ve panel taşıma
 local clickedButton,clickedWindow = nil,nil
 function MouseDown(btn, x, y)
-	local sira = genelGuiTablo[source]
+	local sira = getGuiElement(source)
 	if sira then
 		if sira.isButton then
 			if clickedButton then return end
@@ -177,8 +126,8 @@ function MouseDown(btn, x, y)
 			guiSetPosition(source, x+2,y+2, false)
 			guiSetSize(source, g-4,u-4, false)
 		end
-		if btn == "left" and sira.isHeader and wtablo[sira.w].move then
-			clickedWindow = wtablo[sira.w].resim
+		if btn == "left" and sira.isHeader and gui["w"][sira.i].move then
+			clickedWindow = gui["w"][sira.i].resim
 			local ex,ey = _guiGetPosition( clickedWindow, false )
 			offsetPos = { x - ex, y - ey };
 			addEventHandler( "onClientCursorMove",root,cursorMove)
@@ -200,13 +149,11 @@ function MouseUp(btn, x, y)
 end
 addEventHandler("onClientGUIMouseUp", resourceRoot,MouseUp)
 addEventHandler("onClientGUIMouseDown", resourceRoot,MouseDown) 
-
 addEventHandler("onClientClick", root, function(button, state, _, _, _, _, _, tiklanan)
 	if state == "up" and clickedButton then
 		MouseUp()
 	end	
 end)
-
 function cursorMove(_, _, x, y)
 	if clickedWindow then
 		_guiSetPosition(clickedWindow,x-offsetPos[ 1 ],y-offsetPos[ 2 ], false )
@@ -217,44 +164,28 @@ end
 
 --diğer funclar
 function guiGetPosition(element,relative)
-	local sira = genelGuiTablo[element]
-	if sira then
-		return _guiGetPosition(sira.resim, relative)
-	else
-		return _guiGetPosition(element, relative)
-	end	
+	local t = getGuiElement(element)
+	return _guiGetPosition((t and t.resim) or (element), relative)
 end
 function guiSetPosition(element,x,y,relative)
-	local sira = genelGuiTablo[element]
-	if sira then
-		return _guiSetPosition(sira.resim, x,y,relative)
-	else
-		return _guiSetPosition(element, x,y,relative)
-	end	
+	local t = getGuiElement(element)
+	return _guiSetPosition((t and t.resim) or (element), x,y,relative)
 end
 function guiGetSize(element,relative)
-	local sira = genelGuiTablo[element]
-	if sira then
-		return _guiGetSize(sira.resim, relative)
-	else
-		return _guiGetSize(element, relative)
-	end	
+	local t = getGuiElement(element)
+	return _guiGetSize((t and t.resim) or (element), relative)
 end
 function guiSetSize(element,g,u,relative)
-	local relative = relative or false
-	local sira = genelGuiTablo[element]
-	local tsira = libElementmi(element,"tabpanel")
+	local sira = getGuiElement(element)
 	if sira then
 		_guiSetSize(sira.resim, g,u, relative)
 		if sira.label then
 			_guiSetSize(sira.label, g,u, relative)
 			guiLabelSetHorizontalAlign(sira.label, "center") guiLabelSetVerticalAlign(sira.label, "center")
 		end	
-		if sira.basarka then _guiSetSize(sira.basarka, g,20, relative) end
-		if sira.kapatArka then _guiSetSize(sira.kapatArka, g-25,1, relative) end
+		if sira.basarka then _guiSetSize(sira.basarka, g,20, false) end
+		if sira.kapatArka then _guiSetSize(sira.kapatArka, g-25,1, false) end
 		koseleriAyarla(sira,g,u)
-	elseif tsira then
-		koseleriAyarla(tsira,g,u)
 	else
 		return _guiSetSize(element,g,u,relative)
 	end	
@@ -278,92 +209,57 @@ function koseleriAyarla(t,g,u)
 end	
 
 function guiSetText(element, yazi)
-	local sira = genelGuiTablo[element]
-	local tsira,sira,tabs = libElementmi(element,"tab")
-	if sira and sira.basarka then -- window ise
-		if sira.label then
+	local sira = getGuiElement(element)
+	if sira then 
+		if sira.basarka and sira.label then
 			_guiSetText(sira.label, yazi)
 			guiLabelSetHorizontalAlign(sira.label, "center") guiLabelSetVerticalAlign(sira.label, "center")
 		end	
-	elseif tsira then
-		local yuzunluk = string.len(yazi)*8
-		_guiSetSize(tsira.arka,yuzunluk,20,false)
-		_guiSetSize(tsira.kose,yuzunluk,1,false)
-		_guiSetSize(tsira.yazi,yuzunluk,20,false)
-		_guiSetText(tsira.yazi,yazi)
-		guiLabelSetHorizontalAlign(tsira.yazi, "center")
-		guiLabelSetVerticalAlign(tsira.yazi, "center")
-		for i=sira+1,#tabs.tabciklar do
-			local ox,oy = _guiGetPosition(tabs.tabciklar[i-1].arka,false) 
-			local og,op = _guiGetSize(tabs.tabciklar[i-1].arka,false)
-			_guiSetPosition(tabs.tabciklar[i].arka,(ox+og),0,false)
-		end
+		if sira.pi then -- tab
+			local yuzunluk = string.len(yazi)*8
+			local tsira = gui["t"][sira.pi].tabciklar[sira.i]
+			_guiSetSize(tsira.arka,yuzunluk,20,false)
+			_guiSetSize(tsira.kose,yuzunluk,1,false)
+			_guiSetSize(tsira.yazi,yuzunluk,20,false)
+			_guiSetText(tsira.yazi,yazi)
+			guiLabelSetHorizontalAlign(tsira.yazi, "center")
+			guiLabelSetVerticalAlign(tsira.yazi, "center")
+			for i=sira.i+1,#gui["t"][sira.pi].tabciklar do
+				local ox,oy = _guiGetPosition(gui["t"][sira.pi].tabciklar[i-1].arka,false) 
+				local og,op = _guiGetSize(gui["t"][sira.pi].tabciklar[i-1].arka,false)
+				_guiSetPosition(gui["t"][sira.pi].tabciklar[i].arka,(ox+og),0,false)
+			end
+		end	
 	else
 		return _guiSetText(element, yazi)
 	end
 end
-
 function guiGetText(element)
-	local sira = genelGuiTablo[element]
-	local tsira,sira,tabs = libElementmi(element,"tab")
-	if sira and sira.basarka then -- window ise
-		local yazi = _guiGetText(sira.label)
-		return yazi
-	elseif tsira then
-		local yazi = _guiGetText(tsira.yazi)
-		return yazi
-	else
-		local yazi = _guiGetText(element)
-		return yazi
-	end
+	local sira = getGuiElement(element)
+	return _guiGetText(sira and (sira.pi and gui["t"][sira.pi].tabciklar[sira.i].yazi or sira.label) or (element))
 end
 function guiSetEnabled(element, bool)
-	local bsira = genelGuiTablo[element]
-	local tsira,sira,tabs = libElementmi(element,"tab")
-	if bsira then
-		guiSetAlpha(bsira.resim,bool and 1 or 0.5)
-		return _guiSetEnabled(element, bool)
-	elseif tsira then
-		guiSetAlpha(tsira.arka,bool and 1 or 0.4)
-		_guiSetEnabled(element, bool)
-		return _guiSetEnabled(tsira.arka, bool)
+	local sira = getGuiElement(element)
+	if sira then
+		local elm = (sira.pi and gui["t"][sira.pi].tabciklar[sira.i].arka or sira.resim or sira.label)
+		guiSetAlpha(elm,bool and 1 or 0.5)
+		return _guiSetEnabled(elm, bool)
 	else
 		return _guiSetEnabled(element, bool)
 	end	
 end
 function guiSetVisible(element, bool)
-	local sira = genelGuiTablo[element]
-	local tsira,sira,tabs = libElementmi(element,"tab")
-	if sira then
-		return _guiSetVisible(sira.resim, bool)
-	elseif tsira then
-		_guiSetVisible(tsira.arka, bool)
-		return _guiSetVisible(element, bool)
-	else
-		return _guiSetVisible(element, bool)
-	end	
+	local sira = getGuiElement(element)
+	return _guiSetVisible(sira and (sira.pi and gui["t"][sira.pi].tabciklar[sira.i].arka or sira.resim) or (element),bool)
 end
-
 
 function destroyElement(element)
 	local tip = getElementType(element)
 	if tip:find("gui-") then
-		local bsira,i = libElementmi(element,"b")
-		local esira,i = libElementmi(element,"e")
-		local msira,i = libElementmi(element,"m")
-		local gsira,i = libElementmi(element,"g")
-		if bsira then
-			btablo[i] = nil
-			_destroyElement(bsira.resim)	
-		elseif esira then
-			etablo[i] = nil
-			_destroyElement(esira.resim)
-		elseif msira then
-			mtablo[i] = nil	
-			_destroyElement(msira.resim)	
-		elseif gsira then
-			Ltablo[i] = nil	
-			_destroyElement(gsira.resim)
+		local sira = genelGuiTablo[element]
+		if sira and sira.t then
+			_destroyElement(gui[sira.t][sira.i].resim)
+			gui[sira.t][sira.i]=nil
 		else
 			return _destroyElement(element)
 		end	
@@ -379,8 +275,7 @@ function guiWindowSetSizable(element, bool)
 	end	
 end
 function guiWindowSetMovable(element, bool)
-	-- local wsira = libElementmi(element,"w")
-	local sira = genelGuiTablo[element]
+	local sira = getGuiElement(element)
 	if sira then
 		sira.move = bool
 	else
@@ -388,21 +283,18 @@ function guiWindowSetMovable(element, bool)
 	end	
 end
 function guiWindowIsMovable(element, bool)
-	-- local wsira = libElementmi(element,"w")
-	local sira = genelGuiTablo[element]
+	local sira = getGuiElement(element)
 	if sira then
 		return sira.move
 	else
 		_guiWindowIsMovable(element, bool)
 	end	
 end
-function guiEditSetColor(edit,kenarrenk)
-	-- local esira = libElementmi(edit,"e")
-	local sira = genelGuiTablo[element]
-	if sira and sira.edit then
-		for i,v in pairs(sira.kenarlar) do
-			renkVer(v,kenarrenk)
-			guiSetAlpha(v, 0.5)
+function guiSetLineColor(element,hex)
+	local indeks = getGuiElement(element)
+	if indeks then
+		for i,v in pairs(indeks.kenarlar) do
+			renkVer(v,hex)
 		end	
 	end
 end
