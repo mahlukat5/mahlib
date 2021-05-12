@@ -1,7 +1,7 @@
 function guiCreateButton(x,y,g,u,yazi,relative,parent)
-	bsayi = #btablo +1
-	if not btablo[bsayi] then btablo[bsayi] = {} end
-	local b = btablo[bsayi]
+	bsayi = #gui["b"] +1
+	if not gui["b"][bsayi] then gui["b"][bsayi] = {} end
+	local b = gui["b"][bsayi]
 	if relative  then
 		px,pu=getParentSize(parent)
 		x,y,g,u=x*px,y*pu,g*px,u*pu
@@ -16,12 +16,12 @@ function guiCreateButton(x,y,g,u,yazi,relative,parent)
 	}
 	if not scriptler[sourceResource] then scriptler[sourceResource] = {} end
 	if not scriptler[sourceResource]["b"] then scriptler[sourceResource]["b"] = {} end
-	table.insert(scriptler[sourceResource]["b"], {btablo,bsayi,b.resim})
+	table.insert(scriptler[sourceResource]["b"], {bsayi,b.resim})
 	
 	guiSetProperty(b.resim,"ImageColours","tl:FF"..settings.button.back_topleft.." tr:FF"..settings.button.back_topright.." bl:FF"..settings.button.back_bottomleft.." br:FF"..settings.button.back_bottomright.."")
 	guiLabelSetHorizontalAlign(b.label, "center") guiLabelSetVerticalAlign(b.label, "center")
 	guiSetFont(b.label, font1)
 	b.isButton=true
-	genelGuiTablo[b.label]=b
+	genelGuiTablo[b.label]={i=bsayi,t="b"}
 	return b.label 
 end
