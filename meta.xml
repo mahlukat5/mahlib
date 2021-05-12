@@ -60,7 +60,7 @@
 	<export function="guiWindowSetSizable" type="client" />
 	<export function="guiWindowSetMovable" type="client" />
 	<export function="guiWindowIsMovable" type="client" />
-	<export function="guiButtonSetLineColor" type="client" />
+	<export function="guiSetLineColor" type="client" />
 	<export function="renkVer" type="client" />
 	
 	
