@@ -13,7 +13,6 @@ local functions = {
 		["guiCreateGridList"]={" function guiCreateGridList(...)return exports."..isim..":guiCreateGridList(...)end"},
 		["guiCreateButton"]={
 			" function guiCreateButton(...)return exports."..isim..":guiCreateButton(...)end",
-			" function guiButtonSetLineColor(...)return exports."..isim..":guiButtonSetLineColor(...)end",
 		},
 		["guiCreateEdit"]={
 			" function guiCreateEdit(...)return exports."..isim..":guiCreateEdit(...)end",
@@ -65,6 +64,7 @@ local functions = {
 		" function guiSetVisible(...)return exports."..isim..":guiSetVisible(...)end",
 		" function destroyElement(...)return exports."..isim..":destroyElement(...)end",
 		" function renkVer(...)return exports."..isim..":renkVer(...)end",
+		" function guiSetLineColor(...)return exports."..isim..":guiSetLineColor(...)end",
 	}
 }
 
