@@ -25,12 +25,3 @@ function guiCreateButton(x,y,g,u,yazi,relative,parent)
 	genelGuiTablo[b.label]=b
 	return b.label 
 end
-
-function guiButtonSetLineColor(element,hex)
-	local indeks = genelGuiTablo[element]
-	if indeks then
-		for i,v in pairs(indeks.kenarlar) do
-			renkVer(v,hex)
-		end	
-	end
-end
