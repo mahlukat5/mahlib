@@ -1,7 +1,7 @@
 function guiCreateEdit(x,y,g,u,yazi,relative,parent)
-	esayi = #etablo +1
-	if not etablo[esayi] then etablo[esayi] = {} end
-	local e = etablo[esayi]
+	esayi = #gui["e"] +1
+	if not gui["e"][esayi] then gui["e"][esayi] = {} end
+	local e = gui["e"][esayi]
 	if relative  then
 		px,pu=getParentSize(parent)
 		x,y,g,u=x*px,y*pu,g*px,u*pu
@@ -16,8 +16,8 @@ function guiCreateEdit(x,y,g,u,yazi,relative,parent)
 	}
 	if not scriptler[sourceResource] then scriptler[sourceResource] = {} end
 	if not scriptler[sourceResource]["e"] then scriptler[sourceResource]["e"] = {} end
-	table.insert(scriptler[sourceResource]["e"], {etablo,esayi,e.resim})
+	table.insert(scriptler[sourceResource]["e"], {esayi,e.resim})
 
-	genelGuiTablo[e.edit]=e
+	genelGuiTablo[e.edit]={i=esayi,t="e"}
 	return e.edit
 end
