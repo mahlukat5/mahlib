@@ -33,6 +33,11 @@ guiWindowSetCloseVisible(window,bool)
 -- you can change line colors with this function
 guiSetLineColor(element,hex)
 ```
+## Extra Events
+```lua
+-- triggered when a window closed with X button. source is window
+"MahLib:PencereKapatıldı" 
+```
 
 ## Preview
 https://streamable.com/sfiear
