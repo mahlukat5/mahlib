@@ -24,32 +24,32 @@ _guiGridListGetRowCount = guiGridListGetRowCount
 local onTop,scrolls = {},{} --for events
 --Sets/create
 function MLguiCreateGridList(x,y,g,u,relative,parent,backrenk,kenarrenk,backalpha,kenaralpha)
-	local sira = #lists+1
-	if not lists[sira] then lists[sira] = {} end
-	local l = lists[sira]
+	local sira = #gui["guilist"]+1
+	if not gui["guilist"][sira] then gui["guilist"][sira] = {} end
+	local l = gui["guilist"][sira]
 	if relative  then
 		px,pu=getParentSize(parent)
 		x,y,g,u=x*px,y*pu,g*px,u*pu
 	end
 	l.parent = parent
 	l.cols,l.rows,l.texts,l.satir,l.secili,l.wheel = {},{},{},0,{-1,-1},false
-	l.back = guiCreateStaticImage(x,y,g,u,resimOlustur("test",100),false,parent)
+	l.resim = guiCreateStaticImage(x,y,g,u,resimOlustur("test",100),false,parent)
 	l.x,l.y,l.g,l.u = x,y,g,u
 	l.kenarlar = {
-		ortaUst = createSideLine(0,0,g,1,l.back,settings.guilist.side_lines),
-		ortaAlt = createSideLine(0,u-1,g,1,l.back,settings.guilist.side_lines),
-		sol = createSideLine(0,0,1,u,l.back,settings.guilist.side_lines),
-		sag = createSideLine(g-1,0,1,u,l.back,settings.guilist.side_lines)
+		ortaUst = createSideLine(0,0,g,1,l.resim,settings.guilist.side_lines),
+		ortaAlt = createSideLine(0,u-1,g,1,l.resim,settings.guilist.side_lines),
+		sol = createSideLine(0,0,1,u,l.resim,settings.guilist.side_lines),
+		sag = createSideLine(g-1,0,1,u,l.resim,settings.guilist.side_lines)
 	}
-	l.erkaninarkasi = guiCreateLabel(0,0,l.g,l.u+20,"",false,l.back)
+	l.erkaninarkasi = guiCreateLabel(0,0,l.g,l.u+20,"",false,l.resim)
 	l.enarka = guiCreateScrollPane(0,20,l.g+20,l.u-20,false,l.erkaninarkasi)
 	
 	if not scriptler[sourceResource] then scriptler[sourceResource] = {} end
-	if not scriptler[sourceResource]["guiList"] then scriptler[sourceResource]["guiList"] = {} end
-	table.insert(scriptler[sourceResource]["guiList"], {lists,sira,l.back})
+	if not scriptler[sourceResource]["guilist"] then scriptler[sourceResource]["guilist"] = {} end
+	table.insert(scriptler[sourceResource]["guilist"], {sira,l.resim})
 	
-	guiSetProperty(l.back,"ImageColours","tl:FF"..settings.guilist.back_topleft.." tr:FF"..settings.guilist.back_topright.." bl:FF"..settings.guilist.back_bottomleft.." br:FF"..settings.guilist.back_bottomright.."")
-	return l.back
+	guiSetProperty(l.resim,"ImageColours","tl:FF"..settings.guilist.back_topleft.." tr:FF"..settings.guilist.back_topright.." bl:FF"..settings.guilist.back_bottomleft.." br:FF"..settings.guilist.back_bottomright.."")
+	return l.resim
 end
 function MLguiGridListAddColumn(liste,baslik,uzunluk)
 	local liste = getListe(liste)
@@ -57,7 +57,7 @@ function MLguiGridListAddColumn(liste,baslik,uzunluk)
 	if not liste.cols[0] then liste.cols[0] = {} end
 	if not liste.cols[sira] then liste.cols[sira] = {} end
 	if sira == 1 then 
-		liste.baslik = guiCreateStaticImage(0,0,liste.g,20,bosresim,false,liste.back)
+		liste.baslik = guiCreateStaticImage(0,0,liste.g,20,bosresim,false,liste.resim)
 		renkVer(liste.baslik,"000000") guiSetProperty(liste.baslik, "AlwaysOnTop", "True")
 	end
 	local Cuzunluk = uzunluk*liste.g
@@ -98,13 +98,13 @@ function MLguiGridListSetItemText(liste,row,col,yazi,secili,sort,img,imgG,imgU)
 	if not liste.texts[row][0] then liste.texts[row][0] = {} end
 	local backcolor,backalpha = backcolor or "212121", backalpha or 150
 	local arkaY = 20+(21*(row-1))
-	local g,u = guiGetSize(liste.back,false)
+	local g,u = guiGetSize(liste.resim,false)
 	local ox,oy = guiGetPosition(liste.cols[col].yazi,false) or 0
 	local og,op = guiGetSize(liste.cols[col].yazi,false) or 0
 	local Cuzunluk = liste.cols[col].uzun*liste.g
 	
 	if arkaY+20 > liste.u-20 and not liste.scrollarka  then
-		liste.scrollarka = guiCreateStaticImage(g-10,20,10,u,bosresim,false,liste.back)
+		liste.scrollarka = guiCreateStaticImage(g-10,20,10,u,bosresim,false,liste.resim)
 		liste.scrollkenar = guiCreateStaticImage(0,0,1,u+20,bosresim,false,liste.scrollarka)
 		guiSetAlpha(liste.scrollkenar,0.4)
 		liste.scroll = guiCreateStaticImage(0,0,10,20,bosresim,false,liste.scrollarka)
@@ -326,9 +326,9 @@ function table.each(t, index, callback, ...)
 end	
 function getListe(element)
 	if type(element) ~= "table" then
-		for i,v in pairs(lists) do
-			if v.back == element then
-				return lists[i]
+		for i,v in pairs(gui["guilist"]) do
+			if v.resim == element then
+				return v
 			end
 		end
 	else
@@ -366,7 +366,7 @@ function moveScroll(_, _, rx, ry)
 	end
 end
 addEventHandler("onClientMouseEnter", resourceRoot, function()
-	for i,v in pairs(lists) do
+	for i,v in pairs(gui["guilist"]) do
 		for row,a in pairs(v.texts) do
 			for col,k in pairs(a) do
 				if source == k.yaziarka and not k.secili then
@@ -380,34 +380,34 @@ addEventHandler("onClientMouseEnter", resourceRoot, function()
 end)
 addEventHandler("onClientMouseLeave", resourceRoot, function()
 	if onTop and onTop.row then
-		guiSetAlpha(lists[onTop.list].texts[onTop.row][0].arka, 1)
+		guiSetAlpha(gui["guilist"][onTop.list].texts[onTop.row][0].arka, 1)
 		-- onTop=nil
 	end
 end)
 addEventHandler("onClientGUIClick", resourceRoot, function()
 	if onTop and onTop.row then
-		local g = lists[onTop.list].texts[onTop.row][onTop.col]
+		local g = gui["guilist"][onTop.list].texts[onTop.row][onTop.col]
 		if source == g.yaziarka and not g.secili then
-			MLguiGridListSetSelectedItem(lists[onTop.list],onTop.row,onTop.col)
-			triggerEvent("onClientGUIClick",lists[onTop.list].back)
-		elseif source == lists[onTop.list].enarka then
-			MLguiGridListSetSelectedItem(lists[onTop.list],-1,-1)
-			triggerEvent("onClientGUIClick",lists[onTop.list].back)
+			MLguiGridListSetSelectedItem(gui["guilist"][onTop.list],onTop.row,onTop.col)
+			triggerEvent("onClientGUIClick",gui["guilist"][onTop.list].resim)
+		elseif source == gui["guilist"][onTop.list].enarka then
+			MLguiGridListSetSelectedItem(gui["guilist"][onTop.list],-1,-1)
+			triggerEvent("onClientGUIClick",gui["guilist"][onTop.list].resim)
 			onTop = nil
 		end
 	end
 end)
 addEventHandler("onClientGUIDoubleClick", resourceRoot, function()
 	if onTop and onTop.row then
-		local g = lists[onTop.list].texts[onTop.row][onTop.col]
+		local g = gui["guilist"][onTop.list].texts[onTop.row][onTop.col]
 		if source == g.yaziarka and not g.secili then
-			triggerEvent("onClientGUIDoubleClick",lists[onTop.list].back)
+			triggerEvent("onClientGUIDoubleClick",gui["guilist"][onTop.list].resim)
 		end	
 	end	
 end)
 addEventHandler("onClientMouseWheel",resourceRoot,function(yon)
-	if onTop and onTop.row and  lists[onTop.list].scrollarka then
-		local v = lists[onTop.list]
+	if onTop and onTop.row and  gui["guilist"][onTop.list].scrollarka then
+		local v = gui["guilist"][onTop.list]
 		local px,py = guiGetPosition(v.scroll,false)
 		local pg,pu = guiGetSize(v.scrollarka,false)
 		if yon == 1 then
