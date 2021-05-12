@@ -1,7 +1,7 @@
 function guiCreateWindow(x,y,g,u,yazi,relative,parent)
-	wsayi = #wtablo +1
-	if not wtablo[wsayi] then wtablo[wsayi] = {} end
-	local w = wtablo[wsayi]
+	wsayi = #gui["w"] +1
+	if not gui["w"][wsayi] then gui["w"][wsayi] = {} end
+	local w = gui["w"][wsayi]
 	if relative  then
 		px,pu=getParentSize(parent)
 		x,y,g,u=x*px,y*pu,g*px,u*pu
@@ -23,29 +23,28 @@ function guiCreateWindow(x,y,g,u,yazi,relative,parent)
 	
 	if not scriptler[sourceResource] then scriptler[sourceResource] = {} end
 	if not scriptler[sourceResource]["w"] then scriptler[sourceResource]["w"] = {} end
-	table.insert(scriptler[sourceResource]["w"], {wtablo,wsayi,w.resim})
+	table.insert(scriptler[sourceResource]["w"], {wsayi,w.resim})
 	
 	guiSetProperty(w.basarka,"ImageColours","tl:FF"..settings.window.header_topleft.." tr:FF"..settings.window.header_topright.." bl:FF"..settings.window.header_bottomleft.." br:FF"..settings.window.header_bottomright.."")
 	guiSetProperty(w.resim,"ImageColours","tl:FF"..settings.window.back_topleft.." tr:FF"..settings.window.back_topright.." bl:FF"..settings.window.back_bottomleft.." br:FF"..settings.window.back_bottomright.."")
 	renkVer(w.kapatArka,settings.window.close_back)
-	guiSetFont(w.label,font1) 
-	guiSetEnabled(w.label,false) 
+	guiSetFont(w.label,font1) guiSetEnabled(w.label,false) 
 	guiLabelSetHorizontalAlign(w.label, "center") guiLabelSetVerticalAlign(w.label, "center")
 	
-	genelGuiTablo[w.resim]=w
-	genelGuiTablo[w.kapat]={w=wsayi,isClose=true}
-	genelGuiTablo[w.basarka]={w=wsayi,isHeader=true}
+	genelGuiTablo[w.resim]={i=wsayi,t="w"}
+	genelGuiTablo[w.kapat]={i=wsayi,isClose=true}
+	genelGuiTablo[w.basarka]={i=wsayi,isHeader=true}
 	return w.resim,w.basarka
 end
 
 function guiWindowSetHeaderColor(element,hex)
-	local sira = genelGuiTablo[element]
+	local sira = getGuiElement(element)
 	if not sira then return end
 	if not hex and sira.basarka then guiSetProperty(sira.basarka,"ImageColours","tl:FF"..settings.window.header_topleft.." tr:FF"..settings.window.header_topright.." bl:FF"..settings.window.header_bottomleft.." br:FF"..settings.window.header_bottomright.."") return end
 	if sira.basarka then renkVer(sira.basarka) end
 end
 function guiWindowSetCloseVisible(element,bool)
-	local sira = genelGuiTablo[element]
+	local sira = getGuiElement(element)
 	if not sira then return end
 	if sira.kapatArka then guiSetVisible(sira.kapatArka,bool) end
 end
