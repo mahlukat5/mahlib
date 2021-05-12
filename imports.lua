@@ -2,10 +2,23 @@ local isim = getResourceName(getThisResource())
 
 local functions = {
 	["create"]={
-		["guiCreateWindow"]={" function guiCreateWindow(...) return exports."..isim..":guiCreateWindow(...)end"},
+		["guiCreateWindow"]={
+			" function guiCreateWindow(...) return exports."..isim..":guiCreateWindow(...)end",
+			" function guiWindowSetSizable(...)return exports."..isim..":guiWindowSetSizable(...)end",
+			" function guiWindowSetMovable(...)return exports."..isim..":guiWindowSetMovable(...)end",
+			" function guiWindowIsMovable(...)return exports."..isim..":guiWindowIsMovable(...)end",
+			" function guiWindowSetHeaderColor(...)return exports."..isim..":guiWindowSetHeaderColor(...)end",
+			" function guiWindowSetCloseVisible(...)return exports."..isim..":guiWindowSetCloseVisible(...)end",
+		},
 		["guiCreateGridList"]={" function guiCreateGridList(...)return exports."..isim..":guiCreateGridList(...)end"},
-		["guiCreateButton"]={" function guiCreateButton(...)return exports."..isim..":guiCreateButton(...)end"},
-		["guiCreateEdit"]={" function guiCreateEdit(...)return exports."..isim..":guiCreateEdit(...)end"},
+		["guiCreateButton"]={
+			" function guiCreateButton(...)return exports."..isim..":guiCreateButton(...)end",
+			" function guiButtonSetLineColor(...)return exports."..isim..":guiButtonSetLineColor(...)end",
+		},
+		["guiCreateEdit"]={
+			" function guiCreateEdit(...)return exports."..isim..":guiCreateEdit(...)end",
+			" function guiEditSetColor(...)return exports."..isim..":guiEditSetColor(...)end",
+		},
 		["guiCreateMemo"]={" function guiCreateMemo(...)return exports."..isim..":guiCreateMemo(...)end"},
 		["guiCreateTabPanel"]={
 			" function guiCreateTabPanel(...)return exports."..isim..":guiCreateTabPanel(...)end",
@@ -30,6 +43,7 @@ local functions = {
 			" function guiGridListSetItemColor(...)return exports."..isim..":MLguiGridListSetItemColor(...)end",
 			" function guiGridListSetItemBackColor(...)return exports."..isim..":MLguiGridListSetItemBackColor(...)end",
 			" function guiGridListSetSortingEnabled(...)return exports."..isim..":MLguiGridListSetSortingEnabled(...)end",
+			" function guiGridListSetVerticalScrollPosition(...)return exports."..isim..":MLguiGridListSetVerticalScrollPosition(...)end",
 			--get functions
 			" function guiGridListGetSelectedItem(...)return exports."..isim..":MLguiGridListGetSelectedItem(...)end",
 			" function guiGridListGetItemText(...)return exports."..isim..":MLguiGridListGetItemText(...)end",
@@ -49,10 +63,6 @@ local functions = {
 		" function guiGetText(...)return exports."..isim..":guiGetText(...)end",
 		" function guiSetEnabled(...)return exports."..isim..":guiSetEnabled(...)end",
 		" function guiSetVisible(...)return exports."..isim..":guiSetVisible(...)end",
-		" function guiWindowSetSizable(...)return exports."..isim..":guiWindowSetSizable(...)end",
-		" function guiWindowSetMovable(...)return exports."..isim..":guiWindowSetMovable(...)end",
-		" function guiWindowIsMovable(...)return exports."..isim..":guiWindowIsMovable(...)end",
-		" function guiEditSetColor(...)return exports."..isim..":guiEditSetColor(...)end",
 		" function destroyElement(...)return exports."..isim..":destroyElement(...)end",
 		" function renkVer(...)return exports."..isim..":renkVer(...)end",
 	}
