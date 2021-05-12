@@ -1,12 +1,14 @@
 <meta>
-	<script src='guilistclient.lua' type='client' cache="false"/>	
+	<script src='ayarlar.lua' type='client' cache="false"/> 
 	<script src='lib.lua' type='client' cache="false"/> 
+	<script src='guilistclient.lua' type='client' cache="false"/>	
 	<script src='guiCreate/guiCreateWindow.lua' type='client' cache="false"/> 
 	<script src='guiCreate/guiCreateButton.lua' type='client' cache="false"/> 
 	<script src='guiCreate/guiCreateEdit.lua' type='client' cache="false"/> 
 	<script src='guiCreate/guiCreateMemo.lua' type='client' cache="false"/> 
 	<script src='guiCreate/guiCreateGridList.lua' type='client' cache="false"/> 
 	<script src='guitabclient.lua' type='client' cache="false"/>
+	<script src='imports.lua' type='client' cache="false"/> 
 	<script src='test.lua' type='client' cache="false"/> 
 	
 	<export function="getFunctions" type="client" />
@@ -35,6 +37,7 @@
 	<export function="MLguiGridListSetItemColor" type="client" />
 	<export function="MLguiGridListSetItemBackColor" type="client" />
 	<export function="MLguiGridListSetSortingEnabled" type="client" />
+	<export function="MLguiGridListSetVerticalScrollPosition" type="client" />
 
 	<export function="MLguiGridListGetSelectedItem" type="client" />
 	<export function="MLguiGridListGetItemText" type="client" />
@@ -57,14 +60,16 @@
 	<export function="guiWindowSetSizable" type="client" />
 	<export function="guiWindowSetMovable" type="client" />
 	<export function="guiWindowIsMovable" type="client" />
+	<export function="guiButtonSetLineColor" type="client" />
 	<export function="renkVer" type="client" />
+	
+	
+	<export function="guiWindowSetHeaderColor" type="client" />
+	<export function="guiWindowSetCloseVisible" type="client" />
 	
 	<export function="guiSetSelectedTab" type="client" />
 	<export function="guiGetSelectedTab" type="client" />
 	<export function="guiDeleteTab" type="client" />
-	
-	
-	<script src='server.lua' type='server' />
 
 	<file src="dosyalar/Font1.ttf" />
 	<file src="dosyalar/Font2.otf" />
