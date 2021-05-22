@@ -48,6 +48,8 @@ function resimOlustur(isim,a)
 	return isim..".png" 
 end
 bosresim = resimOlustur("test") -- silme
+a150 = resimOlustur("a150",150)
+a0 = resimOlustur("a0",0)
 function renkVer(resim,hex)
 	guiSetProperty(resim,"ImageColours","tl:FF"..hex.." tr:FF"..hex.." bl:FF"..hex.." br:FF"..hex)
 end
@@ -214,6 +216,7 @@ function guiSetText(element, yazi)
 		if sira.basarka and sira.label then
 			_guiSetText(sira.label, yazi)
 			guiLabelSetHorizontalAlign(sira.label, "center") guiLabelSetVerticalAlign(sira.label, "center")
+			return
 		end	
 		if sira.pi then -- tab
 			local yuzunluk = string.len(yazi)*8
@@ -229,14 +232,16 @@ function guiSetText(element, yazi)
 				local og,op = _guiGetSize(gui["t"][sira.pi].tabciklar[i-1].arka,false)
 				_guiSetPosition(gui["t"][sira.pi].tabciklar[i].arka,(ox+og),0,false)
 			end
+			return
 		end	
+		_guiSetText(element, yazi)
 	else
 		return _guiSetText(element, yazi)
 	end
 end
 function guiGetText(element)
 	local sira = getGuiElement(element)
-	return _guiGetText(sira and (sira.pi and gui["t"][sira.pi].tabciklar[sira.i].yazi or sira.label) or (element))
+	return _guiGetText(sira and (sira.pi and gui["t"][sira.pi].tabciklar[sira.i].yazi or (sira.label or element)) or (element))
 end
 function guiSetEnabled(element, bool)
 	local sira = getGuiElement(element)
@@ -315,8 +320,3 @@ function RGBToHex(red, green, blue, alpha)
 	end
 
 end
-
-
-
-
-
