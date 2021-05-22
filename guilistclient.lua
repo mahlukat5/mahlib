@@ -113,13 +113,14 @@ function MLguiGridListSetItemText(liste,row,col,yazi,secili,sort,img,imgG,imgU)
 	end
 	if not liste.texts[row][0].arka then
 		local g = guiGetSize(liste.baslik,false)
-		liste.texts[row][0].arka = guiCreateStaticImage(0,arkaY,liste.g,20,resimOlustur("test",secili and 0 or backalpha),false,liste.enarka)
+		liste.texts[row][0].arka = guiCreateStaticImage(0,arkaY,liste.g,20,secili and a0 or a150,false,liste.enarka)
 		guiSetProperty(liste.texts[row][0].arka,"AlwaysOnTop", "False") renkVer(liste.texts[row][0].arka,backcolor) 
 		liste.texts[row][0].arkarenk = backcolor
 	end	
 	liste.texts[row][col].secili = secili
 	if not img then
-		liste.texts[row][col].yazi = guiCreateLabel(ox+2,0,og-2,20,yazi,false,liste.texts[row][0].arka )
+		liste.texts[row][col].yazi = guiCreateLabel(secili and ox+0 or ox+5,0,og-2,20,yazi,false,liste.texts[row][0].arka )
+		if secili then guiSetFont(liste.texts[row][col].yazi,"default-bold-small") end
 	else
 		liste.texts[row][col].yazi = guiCreateStaticImage(ox+2,0,imgG or 20,imgU or 20,yazi,false,liste.texts[row][0].arka )
 	end	
