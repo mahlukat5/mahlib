@@ -21,3 +21,5 @@ function guiCreateEdit(x,y,g,u,yazi,relative,parent)
 	genelGuiTablo[e.edit]={i=esayi,t="e"}
 	return e.edit
 end
+
+--set:389e image:389f

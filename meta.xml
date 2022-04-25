@@ -1,4 +1,6 @@
 <meta>
+	<download_priority_group>10</download_priority_group>
+	<oop>true</oop>
 	<script src='ayarlar.lua' type='client' cache="false"/> 
 	<script src='lib.lua' type='client' cache="false"/> 
 	<script src='guilistclient.lua' type='client' cache="false"/>	
@@ -9,7 +11,7 @@
 	<script src='guiCreate/guiCreateGridList.lua' type='client' cache="false"/> 
 	<script src='guitabclient.lua' type='client' cache="false"/>
 	<script src='imports.lua' type='client' cache="false"/> 
-	<script src='test.lua' type='client' cache="false"/> 
+	<!-- <script src='test.lua' type='client' cache="false"/>  -->
 	
 	<export function="getFunctions" type="client" />
 	
@@ -30,9 +32,11 @@
 	<export function="MLguiGridListSetItemImage" type="client" />
 	<export function="MLguiGridListSetSelectedItem" type="client" />
 	<export function="MLguiGridListSetItemData" type="client" />
+	<export function="MLguiGridListSetItemWidth" type="client" />
 	<export function="MLguiGridListRemoveRow" type="client" />
 	<export function="MLguiGridListClear" type="client" />
 	<export function="MLguiGridListSetColumnTitle" type="client" />
+	<export function="MLguiGridListSetColumnAlign" type="client" />
 	<export function="MLguiGridListSetColumnWidth" type="client" />
 	<export function="MLguiGridListSetItemColor" type="client" />
 	<export function="MLguiGridListSetItemBackColor" type="client" />

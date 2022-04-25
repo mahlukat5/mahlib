@@ -1,4 +1,4 @@
--- full gui
+﻿-- full gui
 _guiCreateTabPanel = guiCreateTabPanel
 _guiCreateTab = guiCreateTab
 _guiSetSelectedTab = guiSetSelectedTab
@@ -50,7 +50,7 @@ function guiCreateTab(yazi,parent,alanrenk)
 	tab.arka = guiCreateStaticImage((ox+og),0,yuzunluk,20,bosresim,false,parent)
 	tab.kose = guiCreateStaticImage(0,19,yuzunluk,1,bosresim,false,tab.arka)
 	renkVer(tab.arka,"000000")
-	renkVer(tab.kose,"1883D7")
+	renkVer(tab.kose,"ff6f00")
 	
 	tab.yazi = guiCreateLabel(0,0,yuzunluk,20,yazi,false,tab.arka)
 	guiLabelSetHorizontalAlign(tab.yazi, "center") guiLabelSetVerticalAlign(tab.yazi, "center")

@@ -8,9 +8,10 @@ gui = {
 	["t"]={},
 	["guilist"]={},
 }
+animler = {}
 sx,sy = guiGetScreenSize()
 
-
+addEvent("MahLib:PencereKapatıldı",true)
 font1 = guiCreateFont("dosyalar/Font1.ttf",12)
 font2 = guiCreateFont("dosyalar/Font1.ttf",13)
 
@@ -33,6 +34,23 @@ _guiWindowSetMovable = guiWindowSetMovable
 _guiWindowIsMovable = guiWindowIsMovable
 
 sourceResource = getThisResource()
+
+function animRender()
+	if #animler > 0 then
+		for i,v in ipairs(animler) do
+			local suan = getTickCount()
+			local gx,gy = interpolateBetween(v.nerdenX,v.nerdenY,0,v.nereyeX,v.nereyeY,0,(suan-v.baslangic)/v.sn,v.anim) -- gidilcekX, gidilcekY
+			v.func(v.elm,gx,gy,false)
+			if math.floor(gx) == math.floor(v.nereyeX) and math.floor(gy) == math.floor(v.nereyeY) then
+				if v.bitis then v.bitis() end	
+				table.remove(animler,i) 
+			end	
+		end
+	-- else
+		-- removeEventHandler("onClientRender",root, animRender)
+	end	
+end
+addEventHandler("onClientRender",root, animRender)
 
 function resimOlustur(isim,a)
 	if fileExists(isim..".png") then return isim..".png" end
@@ -58,10 +76,12 @@ function getParentSize(parent)
 	if parent then px,pu=guiGetSize(parent,false) end
 	return px,pu
 end
-function createSideLine(x,y,g,u,parent,hex)
+function createSideLine(x,y,g,u,parent,hex,alph)
 	local side = guiCreateStaticImage(x,y,g,u,bosresim,false,parent)
 	renkVer(side,hex)
-	guiSetProperty(side, "AlwaysOnTop", "True") guiSetAlpha(side, 0.4)
+	guiSetProperty(side, "AlwaysOnTop", "True")
+	_guiSetEnabled(side,false)
+	guiSetAlpha(side,alph or 0.4)
 	return side
 end
 function getGuiElement(elm)
@@ -82,17 +102,29 @@ addEventHandler("onClientResourceStop", root, function(sc)
 		scriptler[sc] = nil
 	end
 end)
+local hoveredButon = nil
 
 --edit,gridlst,buton,memo mouse
 function kenarAlpha()
-	local sira = getGuiElement(source)
-	if sira then
-		if sira.kenarlar then
-			for i,v in pairs(sira.kenarlar) do
-				guiSetAlpha(v,eventName=="onClientMouseEnter"and 1 or 0.4)
+	local guielm = getGuiElement(source)
+	if guielm then
+		if guielm.kenarlar and not guielm.kapat then
+			for i,v in pairs(guielm.kenarlar) do
+				guiSetAlpha(v,eventName=="onClientMouseEnter" and 1 or 0.4)
 			end	
 		end	
-		if sira.isClose then guiSetAlpha(gui["w"][sira.i].kapatArka, eventName == "onClientMouseEnter" and 1 or 0.5) end
+		if guielm.isButton then
+			local r = eventName=="onClientMouseLeave" and "back" or "side"
+			guiSetProperty(guielm.resim2,"ImageColours","tl:FF"..settings.button[r.."_topleft"].." tr:FF"..settings.button[r.."_topright"].." bl:FF"..settings.button[r.."_bottomleft"].." br:FF"..settings.button[r.."_bottomright"].."")
+			if eventName == "onClientMouseLeave" and hoveredButon then
+				guiLabelSetColor(source,unpack(hoveredButon))
+			else
+				hoveredButon = {guiLabelGetColor(source)}
+				guiLabelSetColor(source,0,0,0)
+			end
+		end
+		
+		if guielm.isClose then guiLabelSetColor(gui["w"][guielm.i].kapat,eventName == "onClientMouseEnter" and 255 or 0,0,0) end
 	end
 	local t = tabciklar[source]
 	if t and t.label then
@@ -109,56 +141,84 @@ addEventHandler("onClientMouseLeave", resourceRoot, kenarAlpha)
 addEventHandler("onClientGUIClick", resourceRoot, function()
 	local sira = getGuiElement(source)
 	if sira and sira.isClose then 
-		guiSetVisible(gui["w"][sira.i].resim, false)
-		showCursor(false)
-		triggerEvent("MahLib:PencereKapatıldı",gui["w"][sira.i].resim)
+		local pg,pu = _guiGetSize(gui["w"][sira.i].resim,false)
+		_guiSetEnabled(source,false)
+		table.insert(animler,{
+			elm=gui["w"][sira.i].resim,
+			baslangic=getTickCount(),
+			nerdenX=pg,nerdenY=pu,
+			nereyeX=pg,nereyeY=20,
+			sn=1000,anim="OutBounce",
+			func = function(elm,g,u) guiSetSize(elm,g,u,false) end,
+			bitis = function() 
+				guiSetVisible(gui["w"][sira.i].resim, false)
+				showCursor(false)  
+				guiSetSize(gui["w"][sira.i].resim,pg,pu,false)
+				_guiSetEnabled(gui["w"][sira.i].kapat,true)
+				triggerEvent("MahLib:PencereKapatıldı",gui["w"][sira.i].resim)
+			end,
+		})	
 	end
 end)
 
 --basinca olan ufalma ve panel taşıma
-local clickedButton,clickedWindow = nil,nil
+local clickedButton,clickedWindow,resizeWindow = nil,nil,nil
 function MouseDown(btn, x, y)
 	local sira = getGuiElement(source)
 	if sira then
-		if sira.isButton then
-			if clickedButton then return end
-			local g,u = guiGetSize(source, false)
-			local x,y = guiGetPosition(source, false)
-			clickedButton = {source,g,u,x,y}
-			guiSetPosition(source, x+2,y+2, false)
-			guiSetSize(source, g-4,u-4, false)
-		end
+		-- if sira.isButton then
+			-- if clickedButton then return end
+			-- local g,u = guiGetSize(source, false)
+			-- local x,y = guiGetPosition(source, false)
+			-- clickedButton = {source,g,u,x,y}
+			-- guiSetPosition(source, x+2,y+2, false)
+			-- guiSetSize(source, g-4,u-4, false)
+		-- end
 		if btn == "left" and sira.isHeader and gui["w"][sira.i].move then
 			clickedWindow = gui["w"][sira.i].resim
 			local ex,ey = _guiGetPosition( clickedWindow, false )
 			offsetPos = { x - ex, y - ey };
 			addEventHandler( "onClientCursorMove",root,cursorMove)
 		end	
+		if btn == "left" and sira.isResizer and gui["w"][sira.i].canResize  then
+			resizeWindow = gui["w"][sira.i].resim
+			local eg,eu = _guiGetSize( gui["w"][sira.i].resim, false )
+			resizeWindow = {gui["w"][sira.i].resim,x-eg,y-eu}
+			addEventHandler( "onClientCursorMove",root,cursorMove)
+		end	
 	end
 end
 function MouseUp(btn, x, y)
 	if clickedButton then
-		local g,u = guiGetSize(clickedButton[1],false)
-		local x,y = guiGetPosition(clickedButton[1],false)
+		-- local g,u = guiGetSize(clickedButton[1],false)
+		-- local x,y = guiGetPosition(clickedButton[1],false)
 		guiSetPosition(clickedButton[1],clickedButton[4],clickedButton[5],false)
 		guiSetSize(clickedButton[1],clickedButton[2],clickedButton[3],false)
 		clickedButton = nil
 	end	
-	if btn == "left" and clickedWindow then
-		clickedWindow = nil
-		removeEventHandler( "onClientCursorMove",root,cursorMove)
+	if btn == "left" then
+		if (clickedWindow or resizeWindow) then
+			clickedWindow = nil
+			resizeWindow = nil
+			removeEventHandler( "onClientCursorMove",root,cursorMove)
+		end	
 	end
 end
 addEventHandler("onClientGUIMouseUp", resourceRoot,MouseUp)
 addEventHandler("onClientGUIMouseDown", resourceRoot,MouseDown) 
-addEventHandler("onClientClick", root, function(button, state, _, _, _, _, _, tiklanan)
-	if state == "up" and clickedButton then
-		MouseUp()
+addEventHandler("onClientClick", root, function(button,state)
+	if state == "up" then
+		if (clickedButton or resizeWindow) then
+			MouseUp(button)
+		end	
 	end	
 end)
 function cursorMove(_, _, x, y)
 	if clickedWindow then
 		_guiSetPosition(clickedWindow,x-offsetPos[ 1 ],y-offsetPos[ 2 ], false )
+	end
+	if resizeWindow then
+		guiSetSize(resizeWindow[1],math.max(x-resizeWindow[2],30),math.max(y-resizeWindow[3],30), false) 
 	end
 end
 
@@ -181,12 +241,16 @@ function guiSetSize(element,g,u,relative)
 	local sira = getGuiElement(element)
 	if sira then
 		_guiSetSize(sira.resim, g,u, relative)
-		if sira.label then
-			_guiSetSize(sira.label, g,u, relative)
+		if sira.isButton then
+			_guiSetSize(sira.resim2, g-2,u-2, relative)
+			-- _guiSetPosition(sira.resim2, g-4,u-4, relative)
+		end
+		if sira.label  then
+			_guiSetSize(sira.label,g,20,false)
 			guiLabelSetHorizontalAlign(sira.label, "center") guiLabelSetVerticalAlign(sira.label, "center")
 		end	
-		if sira.basarka then _guiSetSize(sira.basarka, g,20, false) end
-		if sira.kapatArka then _guiSetSize(sira.kapatArka, g-25,1, false) end
+		if sira.basarka then _guiSetSize(sira.basarka,g,20, false) end
+		if sira.kapatArka then _guiSetPosition(sira.kapatArka,g-25,0, false) end
 		koseleriAyarla(sira,g,u)
 	else
 		return _guiSetSize(element,g,u,relative)
@@ -196,18 +260,24 @@ end
 function koseleriAyarla(t,g,u)
 	-- üst çizgi
 	local g,u = _guiGetSize(t.resim,false)
-	if t.kenarlar.ortaUst then
-		_guiSetSize(t.kenarlar.ortaUst, g,1, false)
-		_guiSetPosition(t.kenarlar.ortaUst,0,0,false)	
-	end
-	-- alt çizgi
-	_guiSetSize(t.kenarlar.ortaAlt, g,1, false)
-	_guiSetPosition(t.kenarlar.ortaAlt,0,u-1,false)	
-	-- sol çizgi 
-	_guiSetSize(t.kenarlar.sol, 1,u, false)
-	-- sag çizgi
-	_guiSetPosition(t.kenarlar.sag,g-1,0,false)
-	_guiSetSize(t.kenarlar.sag, 1,u, false)
+	if t.kenarlar then
+		local g2 = t.kapat and 2 or 1 -- isWindow?
+		if t.kenarlar.ortaUst then
+			_guiSetSize(t.kenarlar.ortaUst,g,g2,false)
+			_guiSetPosition(t.kenarlar.ortaUst,0,g2==2 and 20 or 0,false)	
+		end
+		if t.resize then
+			_guiSetPosition(t.resize,g-10,u-10,false)
+		end
+		-- alt çizgi
+		_guiSetSize(t.kenarlar.ortaAlt,g,g2, false)
+		_guiSetPosition(t.kenarlar.ortaAlt,0,u-g2,false)	
+		-- sol çizgi 
+		_guiSetSize(t.kenarlar.sol,g2,u, false)
+		-- sag çizgi
+		_guiSetPosition(t.kenarlar.sag,g-g2,0,false)
+		_guiSetSize(t.kenarlar.sag,g2,u, false)
+	end	
 end	
 
 function guiSetText(element, yazi)
@@ -273,11 +343,14 @@ function destroyElement(element)
 	end	
 end	
 function guiWindowSetSizable(element, bool)
-	if getElementType(element) ~= "gui-window" then
-		return false
+	local sira = getGuiElement(element)
+	if sira and sira.resize then
+		_guiSetVisible(sira.resize,bool)
+		sira.canResize=bool
+		return bool
 	else
-		_guiWindowSetSizable(element, bool)
-	end	
+		return _guiWindowSetSizable(element, bool)
+	end
 end
 function guiWindowSetMovable(element, bool)
 	local sira = getGuiElement(element)
@@ -298,8 +371,12 @@ end
 function guiSetLineColor(element,hex)
 	local indeks = getGuiElement(element)
 	if indeks then
-		for i,v in pairs(indeks.kenarlar) do
-			renkVer(v,hex)
+		if indeks.kenarlar then
+			for i,v in pairs(indeks.kenarlar) do
+				renkVer(v,hex)
+			end	
+		else
+			if indeks.isButton then renkVer(indeks.resim,hex) end
 		end	
 	end
 end
