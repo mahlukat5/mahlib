@@ -442,9 +442,10 @@ addEventHandler("onClientMouseEnter", resourceRoot, function()
 	end
 end)
 addEventHandler("onClientMouseLeave", resourceRoot, function()
+	iprint(onTop)
 	if onTop and onTop.row then
 		guiSetAlpha(gui["guilist"][onTop.list].texts[onTop.row][0].arka, 1)
-		-- onTop=nil
+		onTop={}
 	end
 end)
 addEventHandler("onClientGUIClick", resourceRoot, function(b,s,x,y)
@@ -471,6 +472,7 @@ addEventHandler("onClientGUIDoubleClick", resourceRoot, function(b,s,x,y)
 end)
 addEventHandler("onClientMouseWheel",resourceRoot,function(yon)
 	if onTop and onTop.row and  gui["guilist"][onTop.list].scrollarka then
+		iprint(onTop)
 		local v = gui["guilist"][onTop.list]
 		local px,py = guiGetPosition(v.scroll,false)
 		local pg,pu = guiGetSize(v.scrollarka,false)
