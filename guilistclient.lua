@@ -442,7 +442,6 @@ addEventHandler("onClientMouseEnter", resourceRoot, function()
 	end
 end)
 addEventHandler("onClientMouseLeave", resourceRoot, function()
-	iprint(onTop)
 	if onTop and onTop.row then
 		guiSetAlpha(gui["guilist"][onTop.list].texts[onTop.row][0].arka, 1)
 		onTop={}
