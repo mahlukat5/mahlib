@@ -307,7 +307,7 @@ function MLguiGridListGetItemText(liste,row,col)
 	if not liste.texts[row] then return false end
 	if not liste.texts[row][col] then return false end
 	local elm = liste.texts[row][col].yazi
-	return getElementType(elm)
+	return guiGetText(elm) or ""
 end
 function MLguiGridListGetItemData(liste,row,col)
 	local liste = getListe(liste)
