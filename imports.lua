@@ -24,6 +24,7 @@ local functions = {
 			" function guiSetSelectedTab(...)return exports."..isim..":guiSetSelectedTab(...)end",
 			" function guiGetSelectedTab(...)return exports."..isim..":guiGetSelectedTab(...)end",
 			" function guiDeleteTab(...)return exports."..isim..":guiDeleteTab(...)end",
+			" function guiTabSetHorizontalAlign(...)return exports."..isim..":guiTabSetHorizontalAlign(...)end",
 		},
 		["guilist"] = {
 			--set functions

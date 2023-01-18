@@ -17,10 +17,13 @@ end)
 
 local tabpanel = guiCreateTabPanel(10,30,pg-20,pu-60,false,panel)
 local tab1 = guiCreateTab("TabPanel Tab 1",tabpanel)
-local tab2 = guiCreateTab("TabPanel Tab 2",tabpanel,"CC0000")
+local tab2 = guiCreateTab("TabPanel Tab 22222",tabpanel,"CC0000")
 local tab3 = guiCreateTab("TabPanel Tab 3",tabpanel,"GGGGGG")
-local tab4 = guiCreateTab("TabPanel Tab 4",tabpanel,"a5a5a5")
-local tab5 = guiCreateTab("TabPanel Tab 5",tabpanel,"c4b2b2")
+-- local tab4 = guiCreateTab("TabPanel Tab 4",tabpanel,"a5a5a5")
+-- local tab5 = guiCreateTab("TabPanel Tab 5",tabpanel,"c4b2b2")
+guiTabSetHorizontalAlign(tabpanel,"center")
+
+-- guiCreateStaticImage(0.5,0.07,0.01,1,bosresim,true,tabpanel)
 
 local tab1liste = guiCreateGridList(10,20,150,150,false,tab1)
 guiGridListAddColumn(tab1liste,"G1",0.2)
@@ -70,5 +73,3 @@ end
 for i=1,10 do
 	edit = guiCreateEdit(10+105,20+(25)*(i-1),100,20,"Edit "..i,false,tab3)
 end
-edit = guiCreateEdit(10,180,100,20,"Edit ",false,tab1)
-buton = guiCreateButton(10,210,100,20,"Edit ",false,tab1)

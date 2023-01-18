@@ -73,6 +73,7 @@
 	<export function="guiSetSelectedTab" type="client" />
 	<export function="guiGetSelectedTab" type="client" />
 	<export function="guiDeleteTab" type="client" />
+	<export function="guiTabSetHorizontalAlign" type="client" />
 
 	<file src="dosyalar/Font1.ttf" />
 	<file src="dosyalar/Font2.otf" />

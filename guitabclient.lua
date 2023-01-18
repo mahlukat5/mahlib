@@ -16,50 +16,65 @@ function guiCreateTabPanel(x,y,g,u,relative,parent)
 		x,y,g,u=x*px,y*pu,g*px,u*pu
 	end
 	t.resim = guiCreateLabel(x,y,g,u,"",false,parent)
+	t.tabciklar_arka = guiCreateLabel(0,0,0,20,"",false,t.resim)
+	guiSetProperty(t.tabciklar_arka, "AlwaysOnTop", "True")
 	t.x,t.y = x,y
 	t.g,t.u = g,u
 	t.secili,t.tabciklar = nil,{}
 	
 	t.tabciklar[0] = {}
-	t.tabciklar[0].arka = guiCreateLabel(0,0,0,0,"",false,t.resim)
+	t.tabciklar[0].arka = guiCreateLabel(0,0,0,0,"",false,t.tabciklar_arka)
 	t.kenarlar = {
 		ortaAlt = createSideLine(0,t.u-1,t.g,1,t.resim,settings.tabpanel.side_lines),
 		sol = createSideLine(0,20,1,t.u-20,t.resim,settings.tabpanel.side_lines),
 		sag = createSideLine(t.g-1,20,1,t.u-20,t.resim,settings.tabpanel.side_lines)
 	}
+	
 	if not scriptler[sourceResource] then scriptler[sourceResource] = {} end
 	if not scriptler[sourceResource]["t"] then scriptler[sourceResource]["t"] = {} end
 	table.insert(scriptler[sourceResource]["t"], {sira,t.resim})
 	genelGuiTablo[t.resim]={i=sira,t="t"}
+	
 	return t.resim
 end
+
 function guiCreateTab(yazi,parent,alanrenk)
 	local ind = genelGuiTablo[parent]
 	local t = gui["t"][ind.i]
 	local sira = #t.tabciklar+1
 	if not t.tabciklar[sira] then t.tabciklar[sira] = {} end
 	local tab = t.tabciklar[sira]
+	
 	if not alanrenk or string.len(alanrenk) > 6 then
 		alanrenk =  "000000" 
 	end
 	tab.alanrenk = alanrenk
 	
-	local ox,oy = guiGetPosition(t.tabciklar[sira-1].arka,false) 
-	local og,op = guiGetSize(t.tabciklar[sira-1].arka,false)
-	local yuzunluk = utf8.len(yazi)*8
-	tab.arka = guiCreateStaticImage((ox+og),0,yuzunluk,20,bosresim,false,parent)
-	tab.kose = guiCreateStaticImage(0,19,yuzunluk,1,bosresim,false,tab.arka)
+	local ox,_ = guiGetPosition(t.tabciklar[sira-1].arka,false) 
+	local og,_ = guiGetSize(t.tabciklar[sira-1].arka,false)
+	local tabciklar_arka_g,_ = _guiGetSize(t.tabciklar_arka,false)
+	local tab_width = utf8.len(yazi)*8
+	_guiSetSize(t.tabciklar_arka,tabciklar_arka_g+tab_width,20,false)
+	local new_x = (ox+og)
+
+	
+	tab.arka = guiCreateStaticImage(new_x,0,tab_width,20,bosresim,false,t.tabciklar_arka)
+	tab.kose = guiCreateStaticImage(0,19,tab_width,1,bosresim,false,tab.arka)
+	
 	renkVer(tab.arka,"000000")
 	renkVer(tab.kose,"ff6f00")
 	
-	tab.yazi = guiCreateLabel(0,0,yuzunluk,20,yazi,false,tab.arka)
+	tab.yazi = guiCreateLabel(0,0,tab_width,20,yazi,false,tab.arka)
+	
 	guiLabelSetHorizontalAlign(tab.yazi, "center") guiLabelSetVerticalAlign(tab.yazi, "center")
 	
 	tab.alan = guiCreateStaticImage(0,20,t.g,t.u,bosresim,false,parent)
 	renkVer(tab.alan,alanrenk) _guiSetVisible(tab.alan,false) guiSetAlpha(tab.arka,0.7)
+	
 	tabciklar[tab.yazi] = {i=sira,t="t",pi=ind.i,label=true}
 	tabciklar[tab.alan] = {i=sira,t="t",pi=ind.i}
-	if sira == 1 then guiSetSelectedTab(parent,tab.alan) end	
+	if sira == 1 then guiSetSelectedTab(parent,tab.alan) end
+	
 	return tab.alan
 end
 function guiSetSelectedTab(tabpanel,tab)
@@ -92,10 +107,25 @@ function guiDeleteTab(tab,tabpanel)
 	if isElement(ttab.arka) then _destroyElement(ttab.arka) end
 	table.remove(t.tabciklar,sira)
 	for i=1,#t.tabciklar do
-		local ox,oy = guiGetPosition(t.tabciklar[i-1].arka,false) 
-		local og,op = guiGetSize(t.tabciklar[i-1].arka,false)
+		local ox,_ = guiGetPosition(t.tabciklar[i-1].arka,false) 
+		local og,_ = guiGetSize(t.tabciklar[i-1].arka,false)
+		local tabciklar_arka_g,_ = _guiGetSize(t.tabciklar_arka,false)
+		_guiSetSize(t.tabciklar_arka,tabciklar_arka_g+og,20,false)
 		guiSetPosition(t.tabciklar[i].arka,ox+og,0,false)
 	end
+	guiTabSetHorizontalAlign(tabpanel,t.align or "left")
+end
+
+function guiTabSetHorizontalAlign(elm,align)
+	local ind = genelGuiTablo[elm]
+	if not ind then return end
+	if ind.t ~= "t" then return end
+	local t = gui["t"][ind.i]
+	if not t.tabciklar_arka then return end
+	local g,_ = _guiGetSize(t.tabciklar_arka,false)
+	t.align = align
+	
+	_guiSetPosition(t.tabciklar_arka,(align=="left" and 0) or (align=="center" and (t.g-g)/2 or (t.g-g)),0,false)
 end
 
 
