@@ -68,7 +68,7 @@ function guiCreateTab(yazi,parent,alanrenk)
 	
 	guiLabelSetHorizontalAlign(tab.yazi, "center") guiLabelSetVerticalAlign(tab.yazi, "center")
 	
-	tab.alan = guiCreateStaticImage(0,20,t.g,t.u,bosresim,false,parent)
+	tab.alan = guiCreateStaticImage(0,20,t.g,t.u-20,bosresim,false,parent)
 	renkVer(tab.alan,alanrenk) _guiSetVisible(tab.alan,false) guiSetAlpha(tab.arka,0.7)
 	
 	tabciklar[tab.yazi] = {i=sira,t="t",pi=ind.i,label=true}
