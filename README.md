@@ -32,6 +32,9 @@ guiWindowSetCloseVisible(window,bool)
 
 -- you can change line colors with this function
 guiSetLineColor(element,hex)
+
+-- you can change the horizontal alignment of tabs
+guiTabSetHorizontalAlign(tabpanel,align)
 ```
 ## Extra Events
 ```lua
