@@ -359,16 +359,8 @@ function table.each(t, index, callback, ...)
 	end
 	return t
 end	
-function getListe(element)
-	if type(element) ~= "table" then
-		for i,v in pairs(gui["guilist"]) do
-			if v.resim == element then
-				return v
-			end
-		end
-	else
-		return element
-	end	
+function getListe(elm)
+	return type(elm) == "table" and elm or getGuiElement(elm)
 end
 function rePositionRows(liste,fromRow)
 	-- local totalWidth = 0
@@ -471,7 +463,6 @@ addEventHandler("onClientGUIDoubleClick", resourceRoot, function(b,s,x,y)
 end)
 addEventHandler("onClientMouseWheel",resourceRoot,function(yon)
 	if onTop and onTop.row and  gui["guilist"][onTop.list].scrollarka then
-		iprint(onTop)
 		local v = gui["guilist"][onTop.list]
 		local px,py = guiGetPosition(v.scroll,false)
 		local pg,pu = guiGetSize(v.scrollarka,false)
