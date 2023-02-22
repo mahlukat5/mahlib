@@ -9,6 +9,7 @@ gui = {
 	["guilist"]={},
 }
 animler = {}
+
 sx,sy = guiGetScreenSize()
 
 addEvent("MahLib:PencereKapatıldı",true)
