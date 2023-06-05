@@ -36,6 +36,36 @@ guiSetLineColor(element,hex)
 -- you can change the horizontal alignment of tabs
 guiTabSetHorizontalAlign(tabpanel,align)
 ```
+"gui move element 
+```lua
+guiMoveTo(elm,200,100,true,"Linear",1500,500)
+guiMoveTo(elm,x,y,relative,easing,duration,delay)
+```
+"gui size element 
+```lua
+guiSizeTo(elm,200,100,true,"Linear",1500,500)
+guiSizeTo(elm,w,h,relative,easing,duration,delay)
+```
+"gui set alpha element 
+```lua
+guiAlphaTo(elm,200,100,true,"Linear",1500)
+guiAlphaTo(elm,alpha,relative,easing,duration,delay)
+```
+"gui alert anim
+```lua
+guiAlertAnim(elm,false)
+guiAlertAnim(elm,relative)
+```
+"gui stop anim
+```lua
+guiStopAnim(elm)
+guiStopAnim(elm)
+```
+"gui add tooltip
+```lua
+guiAddTooltio(elm,"hi\nhello","#ff00ff")
+guiAddTooltip(elm,text,hexcolor)
+```
 ## Extra Events
 ```lua
 -- triggered when a window closed with X button. source is window
