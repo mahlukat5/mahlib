@@ -1,4 +1,4 @@
-settings = {
+﻿settings = {
 	window = {
 		back_topleft="000000",
 		back_topright="000000",
