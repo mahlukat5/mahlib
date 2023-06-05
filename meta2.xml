@@ -1,0 +1,90 @@
+<meta>
+	<download_priority_group>10</download_priority_group>
+	<oop>true</oop>
+	<script src='ayarlar.lua' type='client' cache="false"/> 
+	<script src='lib.lua' type='client' cache="false"/> 
+	<script src='guilistclient.lua' type='client' cache="false"/>	
+	<script src='guiCreate/guiCreateWindow.lua' type='client' cache="false"/> 
+	<script src='guiCreate/guiCreateButton.lua' type='client' cache="false"/> 
+	<script src='guiCreate/guiCreateEdit.lua' type='client' cache="false"/> 
+	<script src='guiCreate/guiCreateMemo.lua' type='client' cache="false"/> 
+	<script src='guiCreate/guiCreateGridList.lua' type='client' cache="false"/> 
+	<script src='guitabclient.lua' type='client' cache="false"/>
+	<script src='imports.lua' type='client' cache="false"/> 
+	<script src='animations.lua' type='client' cache="false"/> 
+	<!-- <script src='test.lua' type='client' cache="false"/>  -->
+	
+	<export function="getFunctions" type="client" />
+	
+	
+	<export function="guiCreateWindow" type="client" />
+	<export function="guiCreateButton" type="client" />
+	<export function="guiCreateGridList" type="client" />
+	<export function="guiCreateEdit" type="client" />
+	<export function="guiCreateMemo" type="client" />
+	<export function="guiCreateTabPanel" type="client" />
+	<export function="guiCreateTab" type="client" />
+	
+	<!-- custom gui gridlist -->
+	<export function="MLguiCreateGridList" type="client" />
+	<export function="MLguiGridListAddColumn" type="client" />
+	<export function="MLguiGridListAddRow" type="client" />
+	<export function="MLguiGridListSetItemText" type="client" />
+	<export function="MLguiGridListSetItemImage" type="client" />
+	<export function="MLguiGridListSetSelectedItem" type="client" />
+	<export function="MLguiGridListSetItemData" type="client" />
+	<export function="MLguiGridListSetItemWidth" type="client" />
+	<export function="MLguiGridListRemoveRow" type="client" />
+	<export function="MLguiGridListClear" type="client" />
+	<export function="MLguiGridListSetColumnTitle" type="client" />
+	<export function="MLguiGridListSetColumnAlign" type="client" />
+	<export function="MLguiGridListSetColumnWidth" type="client" />
+	<export function="MLguiGridListSetItemColor" type="client" />
+	<export function="MLguiGridListSetItemBackColor" type="client" />
+	<export function="MLguiGridListSetSortingEnabled" type="client" />
+	<export function="MLguiGridListSetVerticalScrollPosition" type="client" />
+
+	<export function="MLguiGridListGetSelectedItem" type="client" />
+	<export function="MLguiGridListGetItemText" type="client" />
+	<export function="MLguiGridListGetItemData" type="client" />
+	<export function="MLguiGridListGetColumnCount" type="client" />
+	<export function="MLguiGridListGetColumnTitle" type="client" />
+	<export function="MLguiGridListGetColumnWidth" type="client" />
+	<export function="MLguiGridListGetRowCount" type="client" />
+	
+	<export function="guiGetPosition" type="client" />
+	<export function="guiSetPosition" type="client" />
+	<export function="guiGetSize" type="client" />
+	<export function="guiSetSize" type="client" />
+	<export function="guiSetText" type="client" />
+	<export function="guiGetText" type="client" />
+	<export function="guiSetEnabled" type="client" />
+	<export function="guiSetVisible" type="client" />
+	<export function="destroyElement" type="client" />
+	<export function="guiWindowSetSizable" type="client" />
+	<export function="guiWindowSetMovable" type="client" />
+	<export function="guiWindowIsMovable" type="client" />
+	<export function="guiSetLineColor" type="client" />
+	<export function="renkVer" type="client" />
+	
+	
+	<export function="guiWindowSetHeaderColor" type="client" />
+	<export function="guiWindowSetCloseVisible" type="client" />
+	
+	<export function="guiSetSelectedTab" type="client" />
+	<export function="guiGetSelectedTab" type="client" />
+	<export function="guiDeleteTab" type="client" />
+	<export function="guiTabSetHorizontalAlign" type="client" />
+		
+	<!-- custom gui animations -->
+	<export function="guiAddTooltip" type="client" />
+	<export function="guiMoveTo" type="client" />
+	<export function="guiAlphaTo" type="client" />
+	<export function="guiAlertAnim" type="client" />
+	<export function="guiSizeTo" type="client" />
+	<export function="guiStopAniming" type="client" />
+
+
+	<file src="dosyalar/Font1.ttf" />
+	<file src="dosyalar/Font2.otf" />
+</meta>
