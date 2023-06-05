@@ -11,6 +11,7 @@
 	<script src='guiCreate/guiCreateGridList.lua' type='client' cache="false"/> 
 	<script src='guitabclient.lua' type='client' cache="false"/>
 	<script src='imports.lua' type='client' cache="false"/> 
+	<script src='animations.lua' type='client' cache="false"/> 
 	<!-- <script src='test.lua' type='client' cache="false"/>  -->
 	
 	<export function="getFunctions" type="client" />
@@ -74,8 +75,16 @@
 	<export function="guiGetSelectedTab" type="client" />
 	<export function="guiDeleteTab" type="client" />
 	<export function="guiTabSetHorizontalAlign" type="client" />
+		
+	<!-- custom gui animations -->
+	<export function="guiAddTooltip" type="client" />
+	<export function="guiMoveTo" type="client" />
+	<export function="guiAlphaTo" type="client" />
+	<export function="guiAlertAnim" type="client" />
+	<export function="guiSizeTo" type="client" />
+	<export function="guiStopAniming" type="client" />
+
 
 	<file src="dosyalar/Font1.ttf" />
 	<file src="dosyalar/Font2.otf" />
 </meta>
-

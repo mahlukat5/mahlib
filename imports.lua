@@ -54,6 +54,14 @@ local functions = {
 			" function guiGridListGetColumnWidth(...)return exports."..isim..":MLguiGridListGetColumnWidth(...)end",
 			" function guiGridListGetRowCount(...)return exports."..isim..":MLguiGridListGetRowCount(...)end",		
 		},
+		["animations"] = {
+			" function guiAddTooltip(...)return exports."..isim..":guiAddTooltip(...)end",
+			" function guiMoveTo(...)return exports."..isim..":guiMoveTo(...)end",
+			" function guiAlphaTo(...)return exports."..isim..":guiAlphaTo(...)end",
+			" function guiAlertAnim(...)return exports."..isim..":guiAlertAnim(...)end",
+			" function guiSizeTo(...)return exports."..isim..":guiSizeTo(...)end",
+			" function guiStopAniming(...)return exports."..isim..":guiStopAniming(...)end",
+		},
 	},	
 	["utils"]={
 		" function guiGetPosition(...)return exports."..isim..":guiGetPosition(...) end",
@@ -67,6 +75,7 @@ local functions = {
 		" function destroyElement(...)return exports."..isim..":destroyElement(...)end",
 		" function renkVer(...)return exports."..isim..":renkVer(...)end",
 		" function guiSetLineColor(...)return exports."..isim..":guiSetLineColor(...)end",
+		
 	}
 }
 
@@ -77,7 +86,7 @@ function getFunctions(...)
 		if #isim == 1 then -- eğer 1 tane ise
 			local isim = isim[1] -- 1.sini çektik
 			if isim ~= "utils" and functions["create"][isim] then -- eğer "utils" den başka ise ve tabloda varsa
-			
+
 				for i,v in pairs(functions["create"][isim]) do
 					f = f..v -- tablodaki karşılığınu çektik
 				end	
