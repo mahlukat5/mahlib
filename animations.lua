@@ -33,21 +33,22 @@ local anim_timers = {}
 function guiMoveTo(elm,movex,movey,relative,easing,duration,waiting)
     local x,y = guiGetPosition(elm,relative)
     local tick  = getTickCount()
-    table.insert(animations,{anim_type="moving",elm=elm,startx=x,starty=y,movex=movex,movey=movey,relative=relative,oldTick=tick,easing=easing,duration=duration})
     if waiting then
         table.insert(anim_timers,{
             elm = elm,
             timer = setTimer(function(elm,startx,starty,movex,movey,relative,easing,duration)
                 table.insert(animations,{anim_type="moving",elm=elm,startx=x,starty=y,movex=movex,movey=movey,relative=relative,oldTick=tick,easing=easing,duration=duration})
-            end,waiting,1,elm,startx,starty,movex,movey,relative,easing,duration)
+            end,waiting,1,elm,x,y,movex,movey,relative,easing,duration)
         })
+    else
+        table.insert(animations,{anim_type="moving",elm=elm,startx=x,starty=y,movex=movex,movey=movey,relative=relative,oldTick=tick,easing=easing,duration=duration})
     end
 end
 --Gui Alpha animation
 function guiAlphaTo(elm,movealpha,easing,duration,waiting)
     local startalpha = guiGetAlpha(elm)
     local tick  = getTickCount()
-    table.insert(animations,{anim_type="alpha",elm=elm,startalpha=startalpha,movealpha=movealpha,oldTick=tick,easing=easing,duration=duration})
+
     if waiting then
         table.insert(anim_timers,{
             elm = elm,
@@ -55,20 +56,24 @@ function guiAlphaTo(elm,movealpha,easing,duration,waiting)
                 table.insert(animations,{anim_type="alpha",elm=elm,startalpha=startalpha,movealpha=movealpha,oldTick=tick,easing=easing,duration=duration})
             end,waiting,1,elm,startalpha,movealpha,easing,duration)
         })
+    else
+        table.insert(animations,{anim_type="alpha",elm=elm,startalpha=startalpha,movealpha=movealpha,oldTick=tick,easing=easing,duration=duration})
     end
 end
 --Gui sizing animation
 function guiSizeTo(elm,sizew,sizeh,relative,easing,duration,waiting)
     local w,h = guiGetSize(elm,relative)
     local tick  = getTickCount()
-    table.insert(animations,{anim_type="sizing",elm=elm,startw=w,starth=h,sizew=sizew,sizeh=sizeh,relative=relative,oldTick=tick,easing=easing,duration=duration})
+
     if waiting then
         table.insert(anim_timers,{
             elm = elm,
-            timer = setTimer(function(elm,startx,starty,sizex,sizey,relative,easing,duration)
-                table.insert(animations,{anim_type="sizing",elm=elm,startw=w,starth=h,sizew=sizew,sizeh=h,relative=relative,oldTick=tick,easing=easing,duration=duration})
-            end,waiting,1,elm,w,hsizex,sizey,relative,easing,duration)
+            timer = setTimer(function(elm,w,h,sizew,sizeh,relative,easing,duration)
+                table.insert(animations,{anim_type="sizing",elm=elm,startw=w,starth=h,sizew=sizew,sizeh=sizeh,relative=relative,oldTick=tick,easing=easing,duration=duration})
+            end,waiting,1,elm,w,h,sizew,sizeh,relative,easing,duration)
         })
+    else
+        table.insert(animations,{anim_type="sizing",elm=elm,startw=w,starth=h,sizew=sizew,sizeh=sizeh,relative=relative,oldTick=tick,easing=easing,duration=duration})
     end
 end
 
@@ -110,6 +115,21 @@ function setAnimRender()
             local movealpha= interpolateBetween(animt.startalpha,0,0,animt.movealpha,0,0,(nowTick-animt.oldTick)/animt.duration,animt.easing)
             guiSetAlpha(animt.elm,movealpha)
             if nowTick-animt.oldTick  > animt.duration then  table.remove(animations,index)  end
+        end
+        
+        if animt.anim_type == "sizing" then 
+            if animt.relative then
+                local startw,starth = relativeto(animt.startw,animt.starth)
+                local sizew,sizeh =  relativeto(animt.sizew,animt.sizeh)
+                sizew,sizeh = interpolateBetween(startw,starth,0,sizew,sizeh,0,(nowTick-animt.oldTick)/animt.duration,animt.easing)
+                sizew,sizeh = torelative(sizew,sizeh)
+                guiSetSize(animt.elm,sizew,sizeh,animt.relative) 
+                if nowTick-animt.oldTick  > animt.duration then  table.remove(animations,index) end
+            else
+                local movew,moveh = interpolateBetween(animt.startw,animt.starth,0,animt.sizew,animt.sizeh,0,(nowTick-animt.oldTick)/animt.duration,animt.easing)
+                guiSetSize(animt.elm,sizew,sizeh,animt.relative)
+                if nowTick-animt.oldTick  > animt.duration then  table.remove(animations,index)  end
+            end
         end
     end
 end
