@@ -127,7 +127,7 @@ function setAnimRender()
                 if nowTick-animt.oldTick  > animt.duration then  table.remove(animations,index) end
             else
                 local movew,moveh = interpolateBetween(animt.startw,animt.starth,0,animt.sizew,animt.sizeh,0,(nowTick-animt.oldTick)/animt.duration,animt.easing)
-                guiSetSize(animt.elm,sizew,sizeh,animt.relative)
+                guiSetSize(animt.elm,movew,moveh,animt.relative)
                 if nowTick-animt.oldTick  > animt.duration then  table.remove(animations,index)  end
             end
         end
