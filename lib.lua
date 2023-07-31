@@ -242,6 +242,9 @@ function guiSetSize(element,g,u,relative)
 	local sira = getGuiElement(element)
 	if sira then
 		_guiSetSize(sira.resim, g,u, relative)
+		if sira.elm then 
+			_guiSetSize(sira.elm, g+sira.g,u+sira.u, relative) 
+		end
 		if sira.isButton then
 			_guiSetSize(sira.resim2, g-2,u-2, relative)
 			-- _guiSetPosition(sira.resim2, g-4,u-4, relative)
