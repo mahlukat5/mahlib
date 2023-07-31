@@ -7,7 +7,9 @@ function guiCreateEdit(x,y,g,u,yazi,relative,parent)
 		x,y,g,u=x*px,y*pu,g*px,u*pu
 	end	
 	e.resim = guiCreateLabel(x,y,g,u, "", false, parent)
-	e.edit = _guiCreateEdit(-7,-5,g+15, u+8,yazi,false, e.resim)
+	e.elm = _guiCreateEdit(-7,-5,g+15, u+8,yazi,false, e.resim)
+	e.g=15
+	e.u=8
 	e.kenarlar = {
 		ortaUst = createSideLine(0,0,g,1,e.resim,settings.edit.side_lines),
 		ortaAlt = createSideLine(0,u-1,g,1,e.resim,settings.edit.side_lines),
@@ -17,9 +19,8 @@ function guiCreateEdit(x,y,g,u,yazi,relative,parent)
 	if not scriptler[sourceResource] then scriptler[sourceResource] = {} end
 	if not scriptler[sourceResource]["e"] then scriptler[sourceResource]["e"] = {} end
 	table.insert(scriptler[sourceResource]["e"], {esayi,e.resim})
-
-	genelGuiTablo[e.edit]={i=esayi,t="e"}
-	return e.edit
+	genelGuiTablo[e.elm]={i=esayi,t="e"}
+	return e.elm
 end
 
 --set:389e image:389f

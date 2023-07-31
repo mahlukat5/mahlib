@@ -7,7 +7,9 @@ function guiCreateGridList(x,y,g,u,relative,parent)
 		x,y,g,u=x*px,y*pu,g*px,u*pu
 	end
 	L.resim = guiCreateLabel(x,y,g,u, "", false, parent)
-	L.liste = _guiCreateGridList(-8,-10,g+18, u+18,false, L.resim)
+	L.elm = _guiCreateGridList(-8,-10,g+18, u+18,false, L.resim)
+	L.g = 18
+	L.u = 18
 	L.kenarlar = {
 		ortaUst = createSideLine(0,0,g,1,L.resim,settings.gridlist.side_lines),
 		ortaAlt = createSideLine(0,u-1,g,1,L.resim,settings.gridlist.side_lines),
@@ -17,6 +19,6 @@ function guiCreateGridList(x,y,g,u,relative,parent)
 	if not scriptler[sourceResource] then scriptler[sourceResource] = {} end
 	if not scriptler[sourceResource]["g"] then scriptler[sourceResource]["g"] = {} end
 	table.insert(scriptler[sourceResource]["g"], {Lsayi,L.resim})
-	genelGuiTablo[L.liste]={i=Lsayi,t="g"}
-	return L.liste
+	genelGuiTablo[L.elm]={i=Lsayi,t="g"}
+	return L.elm
 end
